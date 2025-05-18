@@ -17,6 +17,7 @@ public class UserController {
     @Autowired
     private UserService userService;
 
+    // Chức năng này sẽ tạo mới một người dùng
     // @PostMapping: Để tạo mới user
     // @RequestBody: Để mapping dữ liệu từ  request body vào UserCreationRequest
     // @Valid: Để kiểm tra dữ liệu đầu vào có hợp lệ hay không
@@ -27,7 +28,7 @@ public class UserController {
         return apiResponse;
     }
 
-    // @GetMapping: Để lấy danh sách user
+    // Chức năng này sẽ lấy danh sách người dùng
     @GetMapping
     List<User> getUsers(){
     return userService.getUsers();
@@ -39,6 +40,7 @@ public class UserController {
         return userService.getUser(userId);
     }
 
+    // Chức năng này sẽ cập nhật thông tin người dùng
     // @PutMapping: Để cập nhật thông tin user
     // @RequestBody: Để mapping dữ liệu từ request body vào UserUpdateRequest
     @PutMapping("/{userId}")
@@ -46,6 +48,7 @@ public class UserController {
         return userService.updateUser(userId, request);
     }
 
+    // Chức năng này sẽ xóa người dùng
     // @DeleteMapping: Để xóa user
     @DeleteMapping("/{userId}")
     String deleteUser(@PathVariable String userId) {
