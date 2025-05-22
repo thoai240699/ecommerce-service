@@ -12,6 +12,7 @@ import com.thoai.ecommerce_service.exception.AppException;
 import com.thoai.ecommerce_service.exception.ErrorCode;
 import com.thoai.ecommerce_service.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -44,7 +45,9 @@ public class AuthenticationService {
 
     // Triển khai JWT để xác thực người dùng
     // Generate SIGNING_KEY từ trang https://generate-random.org
-    protected static final String SIGNING_KEY = "7OCl+qqZCfQqdQijYq1xiA6mu15k8Ho66tsGBYHmrsEMWnTzEIl7L/ECLUOyLltu";
+    @Value("${jwt.signerKey}")
+    private String SIGNING_KEY;
+    //protected static final String SIGNING_KEY = "7OCl+qqZCfQqdQijYq1xiA6mu15k8Ho66tsGBYHmrsEMWnTzEIl7L/ECLUOyLltu";
 
     // Login
     public AuthenticationResponse authenticate(AuthenticationRequest request) {

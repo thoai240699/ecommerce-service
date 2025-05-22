@@ -1,21 +1,36 @@
 package com.thoai.ecommerce_service.entity;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-
+import jakarta.persistence.*;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
 @Entity
+@Table(name = "nguoi_dung")
 public class User {
     @Id
+    @Column(name = "ma_nguoi_dung")
     private String userId;
 
+    @Column(name = "ten_dang_nhap")
     private String username;
+
+    @Column(name = "mat_khau")
     private String password;
+
+    @Column(name = "ho_ten")
     private String name;
+
+    @Column(name = "email")
     private String email;
+
+    @Column(name = "so_dien_thoai")
     private String phone;
+
+//    @Enumerated(EnumType.STRING)
+//    @Column(name = "vai_tro")
+//    private VaiTro vaiTro;
+
+    @Column(name = "thoi_gian_tao")
     private LocalDateTime createdAt;
 
     public User() {
@@ -26,6 +41,7 @@ public class User {
     public String getUserId() {
         return userId;
     }
+
 
     public String getUsername() {
         return username;
@@ -67,8 +83,11 @@ public class User {
         this.phone = phone;
     }
 
+
+
     public LocalDateTime getCreatedAt() {
         return createdAt;
     }
+
 
 }

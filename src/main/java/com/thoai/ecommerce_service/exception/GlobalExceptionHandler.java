@@ -16,7 +16,7 @@ public class GlobalExceptionHandler {
 
         ApiResponse apiResponse = new ApiResponse();
         apiResponse.setCode(ErrorCode.UNCATCH_ERROR.getCode());
-        apiResponse.setMessage(ErrorCode.UNCATCH_ERROR.getMessage());
+        apiResponse.setMessage(ErrorCode.UNCATCH_ERROR.getMessage()+ e.getMessage());
 
         return ResponseEntity.badRequest().body(apiResponse);
     }
