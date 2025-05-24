@@ -1,0 +1,89 @@
+@startuml
+
+' ==== ENTITY CLASSES ====
+class User {
+  +String userId
+  +String username
+  +String password
+  +String name
+  +String email
+  +String phone
+  +String role
+  +LocalDateTime createdAt
+}
+
+class Address {
+  +String addressId
+  +String userId
+  +String street
+  +String ward
+  +String district
+  +String city
+}
+
+class Category {
+  +String categoryId
+  +String name
+}
+
+class Product {
+  +String productId
+  +String name
+  +String description
+  +BigDecimal price
+  +int stock
+  +String categoryId
+  +LocalDateTime createdAt
+}
+
+class ProductImage {
+  +String imageId
+  +String productId
+}
+
+class Order {
+  +String orderId
+  +String userId
+  +String addressId
+  +BigDecimal total
+  +String status
+  +LocalDateTime createdAt
+}
+
+class OrderDetail {
+  +String orderDetailId
+  +String orderId
+  +String productId
+  +int quantity
+  +BigDecimal price
+}
+
+class Payment {
+  +String paymentId
+  +String orderId
+  +String method
+  +String status
+  +LocalDateTime paymentDate
+}
+
+class Review {
+  +String reviewId
+  +String userId
+  +String productId
+  +int rating
+  +String comment
+  +LocalDateTime createdAt
+}
+
+' ==== RELATIONSHIPS ====
+User "1" -- "*" Address : has
+User "1" -- "*" Order : places
+User "1" -- "*" Review : writes
+Order "1" -- "*" OrderDetail : contains
+Order "1" -- "1" Payment : paid_by
+OrderDetail "*" -- "1" Product : for
+Product "1" -- "*" ProductImage : has
+Product "1" -- "*" Review : receives
+Category "1" -- "*" Product : includes
+
+@enduml
