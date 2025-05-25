@@ -4,6 +4,7 @@ import com.thoai.ecommerce_service.dto.request.UserCreationRequest;
 import com.thoai.ecommerce_service.dto.request.UserUpdateRequest;
 import com.thoai.ecommerce_service.dto.response.UserResponse;
 import com.thoai.ecommerce_service.entity.User;
+import com.thoai.ecommerce_service.enums.Role;
 import com.thoai.ecommerce_service.exception.AppException;
 import com.thoai.ecommerce_service.exception.ErrorCode;
 import com.thoai.ecommerce_service.mapper.UserMapper;
@@ -14,6 +15,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.HashSet;
 import java.util.List;
 
 @Service
@@ -22,6 +24,7 @@ import java.util.List;
 public class UserService {
     UserRepository userRepository;
     UserMapper userMapper;
+    PasswordEncoder passwordEncoder;
 
     // Tao mới user
     public UserResponse createUser(UserCreationRequest request) {
@@ -40,8 +43,11 @@ public class UserService {
 //        user.setPhone(request.getPhone());
         User user = userMapper.toUser(request);
         // Mã hóa mật khẩu theo thuật toán hash BCrypt
-        PasswordEncoder passwordEncoder = new BCryptPasswordEncoder(9);
         user.setPassword(passwordEncoder.encode(request.getPassword()));
+
+        HashSet<String> roles = new HashSet<>();
+        roles.add(Role.CUSTOMER.name());
+        user.setRoles(roles);
 
         return userMapper.toUserResponse(userRepository.save(user));
     }
@@ -61,8 +67,8 @@ public class UserService {
     }
 
     // Lấy danh sách user
-    public List<User> getUsers(){
-        return userRepository.findAll();
+    public List<UserResponse> getUsers(){
+        return userRepository.findAll().stream().map(userMapper::toUserResponse).toList();
     }
 
     // Lấy thông tin user theo id

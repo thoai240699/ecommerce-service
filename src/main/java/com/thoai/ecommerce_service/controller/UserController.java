@@ -4,11 +4,12 @@ import com.thoai.ecommerce_service.dto.response.ApiResponse;
 import com.thoai.ecommerce_service.dto.request.UserCreationRequest;
 import com.thoai.ecommerce_service.dto.request.UserUpdateRequest;
 import com.thoai.ecommerce_service.dto.response.UserResponse;
-import com.thoai.ecommerce_service.entity.User;
 import com.thoai.ecommerce_service.service.UserService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -17,6 +18,7 @@ import java.util.List;
 @RequestMapping("/users")
 @RequiredArgsConstructor
 @FieldDefaults(level = lombok.AccessLevel.PRIVATE, makeFinal = true)
+@Slf4j
 public class UserController {
     UserService userService;
 
@@ -36,8 +38,14 @@ public class UserController {
 
     // Chức năng này sẽ lấy danh sách người dùng
     @GetMapping
-    List<User> getUsers(){
-    return userService.getUsers();
+    ApiResponse<List<UserResponse>> getUsers(){
+        var authentication = SecurityContextHolder.getContext().getAuthentication();
+        log.info("Username: {}", authentication.getName());
+        authentication.getAuthorities().forEach(grantedAuthority -> log.info("Authority: {}", grantedAuthority.getAuthority()));
+
+    return ApiResponse.<List<UserResponse>>builder()
+                .result(userService.getUsers())
+                .build();
     }
 
     // @PathVariable: Để mapping dữ liệu từ request url vào biến userId

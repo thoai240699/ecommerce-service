@@ -17,18 +17,10 @@ import java.util.Set;
 @FieldDefaults(level = lombok.AccessLevel.PRIVATE)
 public class UserResponse {
     String userId;
-
     String username;
-
-    String password;
-
     String name;
-
     String email;
-
     String phone;
-
     Set<String> roles;
-
     LocalDateTime createdAt;
 }
