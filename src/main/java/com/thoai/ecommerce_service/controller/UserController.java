@@ -25,10 +25,13 @@ public class UserController {
     // @RequestBody: Để mapping dữ liệu từ  request body vào UserCreationRequest
     // @Valid: Để kiểm tra dữ liệu đầu vào có hợp lệ hay không
     @PostMapping
-    ApiResponse<User> createUser(@RequestBody @Valid UserCreationRequest request){
-        ApiResponse<User> apiResponse = new ApiResponse<>();
-        apiResponse.setResult(userService.createUser(request));
-        return apiResponse;
+    ApiResponse<UserResponse> createUser(@RequestBody @Valid UserCreationRequest request){
+//        ApiResponse<User> apiResponse = new ApiResponse<>();
+//        apiResponse.setResult(userService.createUser(request));
+//        return apiResponse;
+        return ApiResponse.<UserResponse>builder()
+                .result(userService.createUser(request))
+                .build();
     }
 
     // Chức năng này sẽ lấy danh sách người dùng

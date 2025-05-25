@@ -26,12 +26,9 @@ public class AuthenticationController {
 
     @PostMapping("/token")
     ApiResponse<AuthenticationResponse> authenticate(@RequestBody AuthenticationRequest request) {
-        ApiResponse<AuthenticationResponse> apiResponse = new ApiResponse<>();
-        // Kiểm tra thông tin xác thực
-        AuthenticationResponse response;
-        response = authenticationService.authenticate(request);
-        apiResponse.setResult(response);
-        return apiResponse;
+        return ApiResponse.<AuthenticationResponse>builder()
+                .result(authenticationService.authenticate(request))
+                .build();
     }
 
     @PostMapping("/introspect")

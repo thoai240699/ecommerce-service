@@ -24,7 +24,7 @@ public class UserService {
     UserMapper userMapper;
 
     // Tao mới user
-    public User createUser(UserCreationRequest request) {
+    public UserResponse createUser(UserCreationRequest request) {
         // Kiểm tra xem tên đăng nhập đã tồn tại hay chưa
         if(userRepository.existsByUsername(request.getUsername())){
             throw new AppException(ErrorCode.USER_EXISTS);
@@ -39,7 +39,7 @@ public class UserService {
         PasswordEncoder passwordEncoder = new BCryptPasswordEncoder(9);
         user.setPassword(passwordEncoder.encode(request.getPassword()));
 
-        return userRepository.save(user);
+        return userMapper.toUserResponse(userRepository.save(user));
     }
 
     // Cập nhật thông tin user
