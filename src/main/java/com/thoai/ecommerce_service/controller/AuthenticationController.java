@@ -7,6 +7,8 @@ import com.thoai.ecommerce_service.dto.request.AuthenticationRequest;
 import com.thoai.ecommerce_service.dto.response.AuthenticationResponse;
 import com.thoai.ecommerce_service.dto.response.IntrospectResponse;
 import com.thoai.ecommerce_service.service.AuthenticationService;
+import lombok.RequiredArgsConstructor;
+import lombok.experimental.FieldDefaults;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -17,10 +19,10 @@ import java.text.ParseException;
 
 @RequestMapping("/auth")
 @RestController
+@RequiredArgsConstructor
+@FieldDefaults(level = lombok.AccessLevel.PRIVATE, makeFinal = true)
 public class AuthenticationController {
-    // @Autowired: Để tự động khởi tạo AuthenticationService;
-    @Autowired
-    private AuthenticationService authenticationService;
+    AuthenticationService authenticationService;
 
     @PostMapping("/token")
     ApiResponse<AuthenticationResponse> authenticate(@RequestBody AuthenticationRequest request) {
