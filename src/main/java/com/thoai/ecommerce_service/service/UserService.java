@@ -29,6 +29,10 @@ public class UserService {
         if(userRepository.existsByUsername(request.getUsername())){
             throw new AppException(ErrorCode.USER_EXISTS);
         }
+        // Kiểm tra xem email đã tồn tại hay chưa
+        if(userRepository.existsByEmail(request.getEmail())){
+            throw new AppException(ErrorCode.EMAIL_EXISTS);
+        }
 
 //        user.setUsername(request.getUsername());
 //        user.setName(request.getName());

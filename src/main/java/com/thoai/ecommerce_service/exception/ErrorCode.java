@@ -10,6 +10,7 @@ public enum ErrorCode {
     USER_NOT_FOUND(1002, "Không tìm thấy người dùng với mã người dùng này"),
     USERNAME_NOT_FOUND(1003, "Không tìm thấy người dùng với tên đăng nhập này"),
     PASSWORD_NOT_MATCH(1004, "Mật khẩu không đúng, hãy nhập lại mật khẩu"),
+    EMAIL_EXISTS(1005, "Email đã được sử dụng"),
     ;
 
     private int code;
