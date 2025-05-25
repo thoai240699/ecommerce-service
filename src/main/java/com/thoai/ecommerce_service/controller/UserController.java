@@ -50,9 +50,20 @@ public class UserController {
 
     // @PathVariable: Để mapping dữ liệu từ request url vào biến userId
     @GetMapping("/{userId}")
-    UserResponse getUser(@PathVariable("userId") String userId){
-        return userService.getUser(userId);
+    ApiResponse<UserResponse> getUser(@PathVariable("userId") String userId){
+        return ApiResponse.<UserResponse>builder()
+                .result(userService.getUser(userId))
+                .build();
     }
+
+    // Chức năng này sẽ lấy thông tin người dùng hiện tại
+    @GetMapping("/myInfo")
+    ApiResponse<UserResponse> getMyInformation() {
+        return ApiResponse.<UserResponse>builder()
+                .result(userService.getMyInformation())
+                .build();
+    }
+
 
     // Chức năng này sẽ cập nhật thông tin người dùng
     // @PutMapping: Để cập nhật thông tin user

@@ -11,7 +11,9 @@ import com.thoai.ecommerce_service.mapper.UserMapper;
 import com.thoai.ecommerce_service.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.access.prepost.PostAuthorize;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -21,6 +23,7 @@ import java.util.List;
 @Service
 @RequiredArgsConstructor
 @FieldDefaults(level = lombok.AccessLevel.PRIVATE, makeFinal = true)
+@Slf4j
 public class UserService {
     UserRepository userRepository;
     UserMapper userMapper;
@@ -53,6 +56,7 @@ public class UserService {
     }
 
     // Cập nhật thông tin user
+    @PostAuthorize("returnObject.username == authentication.name or hasAuthority('ADMIN')")
     public UserResponse updateUser(String userId, UserUpdateRequest request){
         User user = userRepository.findById(userId).orElseThrow(() -> new AppException(ErrorCode.USER_NOT_FOUND));
 
@@ -62,16 +66,28 @@ public class UserService {
     }
 
     // Xóa user
+    @PreAuthorize("hasAuthority('ADMIN')")
     public void userDelete(String userId){
         userRepository.deleteById(userId);
     }
 
     // Lấy danh sách user
+    @PreAuthorize("hasAuthority('ADMIN')")
     public List<UserResponse> getUsers(){
         return userRepository.findAll().stream().map(userMapper::toUserResponse).toList();
     }
+    // Lấy thông tin user theo tên đăng nhập
+    public  UserResponse getMyInformation(){
+        // Lấy thông tin người dùng từ SecurityContextHolder
+        String username = org.springframework.security.core.context.SecurityContextHolder.getContext().getAuthentication().getName();
+        // Tìm kiếm người dùng theo tên đăng nhập
+        User user = userRepository.findByUsername(username).orElseThrow(() -> new AppException(ErrorCode.USERNAME_NOT_FOUND));
+        // Chuyển đổi sang UserResponse và trả về
+        return userMapper.toUserResponse(user);
+    }
 
     // Lấy thông tin user theo id
+    @PostAuthorize("returnObject.username == authentication.name or hasAuthority('ADMIN')")
     public UserResponse getUser(String id){
         //Trả về một biến. Nếu không tìm thấy báo lỗi/ dùng lambda function
         //Lambda function trong Java (giới thiệu từ Java 8) là cách viết ngắn gọn của một biểu thức hàm (functional interface implementatio

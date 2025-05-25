@@ -15,9 +15,8 @@ import lombok.experimental.FieldDefaults;
 @Builder
 @FieldDefaults(level = lombok.AccessLevel.PRIVATE)
 public class ApiResponse <T> {
-    // Quy định mã trạng thái cho phản hồi API, thành công là 200
-    int code;
+    @Builder.Default
+    int code=200;
     String message;
-    // T là kiểu dữ liệu tổng quát, có thể là bất kỳ kiểu dữ liệu nào
     T result;
 }

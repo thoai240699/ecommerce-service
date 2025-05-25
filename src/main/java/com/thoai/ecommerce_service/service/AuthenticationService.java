@@ -67,7 +67,7 @@ public class AuthenticationService {
         var user = userRepository.findByUsername(request.getUsername()).orElseThrow(() -> new AppException(ErrorCode.USERNAME_NOT_FOUND));
 
         // Mã hóa mật khẩu theo thuật toán hash BCrypt, strength là độ mạnh của thuật toán, từ 4 đến 31, mặc định là 10
-        PasswordEncoder passwordEncoder = new BCryptPasswordEncoder(15);
+        PasswordEncoder passwordEncoder = new BCryptPasswordEncoder(8);
         // Kiểm tra xem mật khẩu đã mã hóa có khớp với mật khẩu người dùng nhập vào hay không
         if (!passwordEncoder.matches(request.getPassword(), user.getPassword())) {
             throw new AppException(ErrorCode.PASSWORD_NOT_MATCH);
@@ -92,7 +92,7 @@ public class AuthenticationService {
             jwsObject.sign(new MACSigner(SIGNING_KEY.getBytes()));
             return jwsObject.serialize();
         } catch (JOSEException e) {
-            log.error("Không thể tạo token", e);
+            log.error("Can not create token", e);
             throw new RuntimeException(e);
         }
     }
