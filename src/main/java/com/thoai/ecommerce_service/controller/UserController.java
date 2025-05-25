@@ -3,19 +3,22 @@ package com.thoai.ecommerce_service.controller;
 import com.thoai.ecommerce_service.dto.response.ApiResponse;
 import com.thoai.ecommerce_service.dto.request.UserCreationRequest;
 import com.thoai.ecommerce_service.dto.request.UserUpdateRequest;
+import com.thoai.ecommerce_service.dto.response.UserResponse;
 import com.thoai.ecommerce_service.entity.User;
 import com.thoai.ecommerce_service.service.UserService;
 import jakarta.validation.Valid;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
+import lombok.experimental.FieldDefaults;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @RestController
 @RequestMapping("/users")
+@RequiredArgsConstructor
+@FieldDefaults(level = lombok.AccessLevel.PRIVATE, makeFinal = true)
 public class UserController {
-    @Autowired
-    private UserService userService;
+    UserService userService;
 
     // Chức năng này sẽ tạo mới một người dùng
     // @PostMapping: Để tạo mới user
@@ -36,7 +39,7 @@ public class UserController {
 
     // @PathVariable: Để mapping dữ liệu từ request url vào biến userId
     @GetMapping("/{userId}")
-   User getUser(@PathVariable("userId") String userId){
+    UserResponse getUser(@PathVariable("userId") String userId){
         return userService.getUser(userId);
     }
 
@@ -44,7 +47,7 @@ public class UserController {
     // @PutMapping: Để cập nhật thông tin user
     // @RequestBody: Để mapping dữ liệu từ request body vào UserUpdateRequest
     @PutMapping("/{userId}")
-    User updateUser(@PathVariable String userId , @RequestBody UserUpdateRequest request){
+    UserResponse updateUser(@PathVariable String userId , @RequestBody UserUpdateRequest request){
         return userService.updateUser(userId, request);
     }
 

@@ -1,8 +1,11 @@
 package com.thoai.ecommerce_service.exception;
 
+import lombok.Getter;
+
 // Để định nghĩa các mã lỗi
+@Getter
 public enum ErrorCode {
-    UNCATCH_ERROR(9999, "Lỗi không xác định: "),
+    UNCATCH_ERROR(9999, "Lỗi chưa xác định: "),
     USER_EXISTS(1001, "Tên đăng nhập đã tồn tại"),
     USER_NOT_FOUND(1002, "Không tìm thấy người dùng với mã người dùng này"),
     USERNAME_NOT_FOUND(1003, "Không tìm thấy người dùng với tên đăng nhập này"),
@@ -16,10 +19,4 @@ public enum ErrorCode {
         this.message = message;
     }
 
-    public int getCode() {
-        return code;
-    }
-    public String getMessage() {
-        return message;
-    }
 }
