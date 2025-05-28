@@ -56,6 +56,7 @@ public class UserService {
     }
 
     // Cập nhật thông tin user
+    // Chỉ cho phép người dùng cập nhật thông tin của chính mình hoặc người dùng có quyền ADMIN
     @PostAuthorize("returnObject.username == authentication.name or hasAuthority('ADMIN')")
     public UserResponse updateUser(String userId, UserUpdateRequest request){
         User user = userRepository.findById(userId).orElseThrow(() -> new AppException(ErrorCode.USER_NOT_FOUND));
@@ -66,12 +67,14 @@ public class UserService {
     }
 
     // Xóa user
+    // Chỉ cho phép người dùng có quyền ADMIN xóa người dùng
     @PreAuthorize("hasAuthority('ADMIN')")
     public void userDelete(String userId){
         userRepository.deleteById(userId);
     }
 
     // Lấy danh sách user
+    // Chỉ cho phép người dùng có quyền ADMIN xem danh sách người dùng
     @PreAuthorize("hasAuthority('ADMIN')")
     public List<UserResponse> getUsers(){
         return userRepository.findAll().stream().map(userMapper::toUserResponse).toList();
@@ -87,6 +90,7 @@ public class UserService {
     }
 
     // Lấy thông tin user theo id
+    // Chỉ cho phép người dùng xem thông tin của chính mình hoặc người dùng có quyền ADMIN
     @PostAuthorize("returnObject.username == authentication.name or hasAuthority('ADMIN')")
     public UserResponse getUser(String id){
         //Trả về một biến. Nếu không tìm thấy báo lỗi/ dùng lambda function

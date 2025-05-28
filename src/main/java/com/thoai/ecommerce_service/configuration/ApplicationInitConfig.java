@@ -37,7 +37,7 @@ public class ApplicationInitConfig {
                         .roles(roles)
                         .build();
                 userRepository.save(user);
-                log.warn("admin được tạo ra với mật khẩu: admin123");
+                log.warn("username: admin, created with pass: admin123");
             }
         };
     }
