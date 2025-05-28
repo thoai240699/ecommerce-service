@@ -1,13 +1,16 @@
 package com.thoai.ecommerce_service.entity;
 
-import com.thoai.ecommerce_service.enums.Role;
+
 import jakarta.persistence.*;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 import lombok.experimental.FieldDefaults;
 
 import java.time.LocalDateTime;
 import java.util.Set;
-import java.util.UUID;
 
 @NoArgsConstructor
 @AllArgsConstructor
@@ -40,7 +43,8 @@ public class User {
 
     // @Enumerated(EnumType.STRING)
     // @Column(name = "vai_tro")
-    Set<String> roles;
+    @ManyToMany
+    Set<Role> roles;
 
     // @Column(name = "thoi_gian_tao")
     LocalDateTime createdAt;

@@ -1,5 +1,4 @@
-package com.thoai.ecommerce_service.dto.request;
-
+package com.thoai.ecommerce_service.dto.response;
 
 
 import lombok.AllArgsConstructor;
@@ -13,6 +12,7 @@ import lombok.experimental.FieldDefaults;
 @NoArgsConstructor
 @Builder
 @FieldDefaults(level = lombok.AccessLevel.PRIVATE)
-public class IntrospectRequest {
-    String token;
+public class PermissionResponse {
+    String name;
+    String description;
 }
