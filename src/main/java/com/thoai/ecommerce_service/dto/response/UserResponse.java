@@ -1,6 +1,6 @@
 package com.thoai.ecommerce_service.dto.response;
 
-import jakarta.persistence.Column;
+import com.thoai.ecommerce_service.entity.Role;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -21,6 +21,6 @@ public class UserResponse {
     String name;
     String email;
     String phone;
-    Set<String> roles;
+    Set<Role> roles;
     LocalDateTime createdAt;
 }

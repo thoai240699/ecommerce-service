@@ -1,5 +1,4 @@
-package com.thoai.ecommerce_service.dto.request;
-
+package com.thoai.ecommerce_service.dto.response;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -14,8 +13,8 @@ import java.util.Set;
 @NoArgsConstructor
 @Builder
 @FieldDefaults(level = lombok.AccessLevel.PRIVATE)
-public class RoleRequest {
+public class RoleResponse {
     String name;
     String description;
-    Set<String> permissions;
+    Set<PermissionResponse> permissions;
 }

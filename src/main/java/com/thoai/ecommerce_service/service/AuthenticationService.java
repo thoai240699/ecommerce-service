@@ -3,6 +3,7 @@ package com.thoai.ecommerce_service.service;
 import com.nimbusds.jose.*;
 import com.nimbusds.jose.crypto.MACSigner;
 import com.nimbusds.jose.crypto.MACVerifier;
+import com.nimbusds.jwt.JWTClaimsSet;
 import com.nimbusds.jwt.SignedJWT;
 import com.thoai.ecommerce_service.dto.request.AuthenticationRequest;
 import com.thoai.ecommerce_service.dto.request.IntrospectRequest;
@@ -12,20 +13,15 @@ import com.thoai.ecommerce_service.entity.User;
 import com.thoai.ecommerce_service.exception.AppException;
 import com.thoai.ecommerce_service.exception.ErrorCode;
 import com.thoai.ecommerce_service.repository.UserRepository;
-import lombok.Data;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import lombok.experimental.NonFinal;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import com.nimbusds.jwt.JWTClaimsSet;
-import org.springframework.util.CollectionUtils;
 
-import java.text.CollationElementIterator;
 import java.text.ParseException;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
@@ -100,8 +96,8 @@ public class AuthenticationService {
     // Xây dựng chuỗi quyền hạn (scope) từ danh sách vai trò của người dùng
     private String buildScope(User user){
         StringJoiner stringJoiner = new StringJoiner("");
-        if(!CollectionUtils.isEmpty(user.getRoles()))
-            user.getRoles().forEach(stringJoiner::add);
+//        if(!CollectionUtils.isEmpty(user.getRoles()))
+//            user.getRoles().forEach(stringJoiner::add);
         return stringJoiner.toString();
     }
     // Triển khai instropection token

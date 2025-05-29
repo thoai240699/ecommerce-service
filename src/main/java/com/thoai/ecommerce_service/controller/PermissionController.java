@@ -19,6 +19,7 @@ import java.util.List;
 public class PermissionController {
     PermissionService permissionService;
 
+    // Tạo quyền mới
     @PostMapping
     ApiResponse<PermissionResponse> createPermission(@RequestBody PermissionRequest request){
         return ApiResponse.<PermissionResponse>builder()
@@ -26,6 +27,7 @@ public class PermissionController {
                 .build();
     }
 
+    // Lấy danh sách quyền
     @GetMapping
     ApiResponse<List<PermissionResponse>> getPermissions() {
         return ApiResponse.<List<PermissionResponse>>builder()
@@ -33,10 +35,12 @@ public class PermissionController {
                 .build();
     }
 
+    // Xóa quyền
     @DeleteMapping("/{permission}")
     ApiResponse<Void> deletePermission(@PathVariable String permission) {
         permissionService.deletePermission(permission);
-        return ApiResponse.<Void>builder().build();
+        return ApiResponse.<Void>builder()
+                .build();
     }
 
 }

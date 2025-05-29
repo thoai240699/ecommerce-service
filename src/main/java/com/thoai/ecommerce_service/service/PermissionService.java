@@ -2,7 +2,6 @@ package com.thoai.ecommerce_service.service;
 
 import com.thoai.ecommerce_service.dto.request.PermissionRequest;
 import com.thoai.ecommerce_service.dto.response.PermissionResponse;
-import com.thoai.ecommerce_service.entity.Permission;
 import com.thoai.ecommerce_service.mapper.PermissionMapper;
 import com.thoai.ecommerce_service.repository.PermissionRepository;
 import lombok.RequiredArgsConstructor;
@@ -23,13 +22,14 @@ public class PermissionService {
 
     // Tạo quyền mới
     public PermissionResponse createPermission(PermissionRequest request) {
-        Permission permission = permissionMapper.toPermission(request);
+        var permission = permissionMapper.toPermission(request);
         return permissionMapper.toPermissionResponse(permissionRepository.save(permission));
     }
 
     // Lấy danh sách quyền
     public List<PermissionResponse> getPermissions(){
-        return permissionRepository.findAll().stream()
+        return permissionRepository.findAll()
+                .stream()
                 .map(permissionMapper::toPermissionResponse)
                 .toList();
     }

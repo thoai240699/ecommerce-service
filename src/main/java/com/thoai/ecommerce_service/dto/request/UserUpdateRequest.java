@@ -19,7 +19,9 @@ public class UserUpdateRequest {
     @NotBlank(message = "Mật khẩu không được để trống.")
     @Size(min = 8, message = "Mật khẩu phải chứa tối thiểu  8 ký tự.")
     String password;
+
     String name;
+
 
     @NotBlank(message = "Email không được để trống.")
     @Email(message = "Email không hợp lệ.")

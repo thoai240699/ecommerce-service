@@ -4,7 +4,6 @@ import com.thoai.ecommerce_service.dto.request.UserCreationRequest;
 import com.thoai.ecommerce_service.dto.request.UserUpdateRequest;
 import com.thoai.ecommerce_service.dto.response.UserResponse;
 import com.thoai.ecommerce_service.entity.User;
-import com.thoai.ecommerce_service.enums.Role;
 import com.thoai.ecommerce_service.exception.AppException;
 import com.thoai.ecommerce_service.exception.ErrorCode;
 import com.thoai.ecommerce_service.mapper.UserMapper;
@@ -17,7 +16,6 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.util.HashSet;
 import java.util.List;
 
 @Service
@@ -44,13 +42,13 @@ public class UserService {
 //        user.setName(request.getName());
 //        user.setEmail(request.getEmail());
 //        user.setPhone(request.getPhone());
-        User user = userMapper.toUser(request);
+        var user = userMapper.toUser(request);
         // Mã hóa mật khẩu theo thuật toán hash BCrypt
         user.setPassword(passwordEncoder.encode(request.getPassword()));
 
-        HashSet<String> roles = new HashSet<>();
-        roles.add(Role.CUSTOMER.name());
-        user.setRoles(roles);
+//        HashSet<String> roles = new HashSet<>();
+//        roles.add(Role.CUSTOMER.name());
+//        user.setRoles(roles);
 
         return userMapper.toUserResponse(userRepository.save(user));
     }
