@@ -32,13 +32,12 @@ public class CustomJwtDecoder implements JwtDecoder {
             var response = authenticationService.introspect(
                     IntrospectRequest.builder().token(token).build());
 
-            if(!response.isValid()) throw new JwtException("Token is invalid or expired");
+            if (!response.isValid()) throw new JwtException("Token is invalid or expired");
         } catch (JOSEException | ParseException e) {
             throw new JwtException(e.getMessage());
         }
 
-        if(Objects.isNull(nimbusJwtDecoder))
-        {
+        if (Objects.isNull(nimbusJwtDecoder)) {
             SecretKeySpec secretKeySpec = new SecretKeySpec(signerKey.getBytes(), "HS512");
             nimbusJwtDecoder = NimbusJwtDecoder.withSecretKey(secretKeySpec)
                     .macAlgorithm(MacAlgorithm.HS512)
@@ -47,5 +46,4 @@ public class CustomJwtDecoder implements JwtDecoder {
 
         return nimbusJwtDecoder.decode(token);
     }
-
 }

@@ -73,7 +73,8 @@ public class AuthenticationService {
     public AuthenticationResponse authenticate(AuthenticationRequest request) {
         // var là từ khóa trong Java 10, cho phép khai báo biến mà không cần chỉ định
         // kiểu dữ liệu
-        var user = userRepository.findByUsername(request.getUsername())
+        var user = userRepository
+                .findByUsername(request.getUsername())
                 .orElseThrow(() -> new AppException(ErrorCode.USERNAME_NOT_FOUND));
 
         // Mã hóa mật khẩu theo thuật toán hash BCrypt, strength là độ mạnh của thuật
@@ -84,26 +85,19 @@ public class AuthenticationService {
         if (!passwordEncoder.matches(request.getPassword(), user.getPassword())) {
             throw new AppException(ErrorCode.PASSWORD_NOT_MATCH);
         }
-        return AuthenticationResponse.builder()
-                .token(generateToken(user))
-                .build();
+        return AuthenticationResponse.builder().token(generateToken(user)).build();
     }
 
     // Triển khai instropection token
     // kiểm tra xem token có hợp lệ hay không
-    public IntrospectResponse introspect(IntrospectRequest request)
-            throws ParseException, JOSEException {
+    public IntrospectResponse introspect(IntrospectRequest request) throws ParseException, JOSEException {
 
         try {
             verifyToken(request.getToken());
-        }catch (AppException e){
-            return IntrospectResponse.builder()
-                    .valid(false)
-                    .build();
+        } catch (AppException e) {
+            return IntrospectResponse.builder().valid(false).build();
         }
-        return IntrospectResponse.builder()
-                .valid(true)
-                .build();
+        return IntrospectResponse.builder().valid(true).build();
     }
 
     // Logout
@@ -115,13 +109,10 @@ public class AuthenticationService {
         String jit = signedJWT.getJWTClaimsSet().getJWTID();
         Date expirationTime = signedJWT.getJWTClaimsSet().getExpirationTime();
 
-        InvalidatedToken invalidatedToken = InvalidatedToken.builder()
-                .id(jit)
-                .expiration(expirationTime)
-                .build();
+        InvalidatedToken invalidatedToken =
+                InvalidatedToken.builder().id(jit).expiration(expirationTime).build();
 
         invalidatedTokenRepository.save(invalidatedToken);
-
     }
 
     private SignedJWT verifyToken(String token) throws ParseException, JOSEException {
@@ -137,7 +128,7 @@ public class AuthenticationService {
             throw new AppException(ErrorCode.UNAUTHORIZED);
         }
 
-        if(invalidatedTokenRepository.existsById(signedJWT.getJWTClaimsSet().getJWTID()))
+        if (invalidatedTokenRepository.existsById(signedJWT.getJWTClaimsSet().getJWTID()))
             throw new AppException(ErrorCode.UNAUTHORIZED);
 
         return signedJWT;
@@ -151,7 +142,7 @@ public class AuthenticationService {
                 .issuer("thoai.com") // Thay thế bằng tên miền
                 .issueTime(new Date())
                 .expirationTime(new Date(Instant.now().plus(4, ChronoUnit.HOURS).toEpochMilli()))
-                .jwtID(UUID.randomUUID().toString())// Tạo một ID duy nhất cho token
+                .jwtID(UUID.randomUUID().toString()) // Tạo một ID duy nhất cho token
                 .claim("scope", buildScope(user)) // Thêm thông tin về quyền hạn của người dùng
                 .build();
         Payload payload = new Payload(claimsSet.toJSONObject());
@@ -167,15 +158,14 @@ public class AuthenticationService {
 
     // Xây dựng chuỗi quyền hạn (scope) từ danh sách vai trò của người dùng
     private String buildScope(User user) {
-        StringJoiner stringJoiner = new StringJoiner(" ");// Khoang trong này sẽ được sử dụng để phân tách các quyền hạn
+        StringJoiner stringJoiner =
+                new StringJoiner(" "); // Khoang trong này sẽ được sử dụng để phân tách các quyền hạn
         if (!CollectionUtils.isEmpty(user.getRoles()))
             user.getRoles().forEach(role -> {
                 stringJoiner.add("ROLE_" + role.getName()); // Thêm tiền tố "ROLE_" vào tên vai trò
                 if (!CollectionUtils.isEmpty(role.getPermissions()))
-                    role.getPermissions()
-                            .forEach(permission -> stringJoiner.add(permission.getName()));
+                    role.getPermissions().forEach(permission -> stringJoiner.add(permission.getName()));
             });
         return stringJoiner.toString();
     }
-
 }

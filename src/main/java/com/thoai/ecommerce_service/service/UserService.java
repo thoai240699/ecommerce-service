@@ -34,38 +34,37 @@ public class UserService {
     // Tao mới user
     public UserResponse createUser(UserCreationRequest request) {
         // Kiểm tra xem tên đăng nhập đã tồn tại hay chưa
-        if(userRepository.existsByUsername(request.getUsername())){
+        if (userRepository.existsByUsername(request.getUsername())) {
             throw new AppException(ErrorCode.USER_EXISTS);
         }
         // Kiểm tra xem email đã tồn tại hay chưa
-        if(userRepository.existsByEmail(request.getEmail())){
+        if (userRepository.existsByEmail(request.getEmail())) {
             throw new AppException(ErrorCode.EMAIL_EXISTS);
         }
 
-//        user.setUsername(request.getUsername());
-//        user.setName(request.getName());
-//        user.setEmail(request.getEmail());
-//        user.setPhone(request.getPhone());
+        //        user.setUsername(request.getUsername());
+        //        user.setName(request.getName());
+        //        user.setEmail(request.getEmail());
+        //        user.setPhone(request.getPhone());
         var user = userMapper.toUser(request);
         // Mã hóa mật khẩu theo thuật toán hash BCrypt
         user.setPassword(passwordEncoder.encode(request.getPassword()));
 
-
-//      var roles = roleRepository.findAllById(request.getRoles());     H
-//        user.setRoles(new HashSet<>(roles));
+        //      var roles = roleRepository.findAllById(request.getRoles());     H
+        //        user.setRoles(new HashSet<>(roles));
         HashSet<String> roles = new HashSet<>();
         roles.add(Role.CUSTOMER.name());
 
-//        HashSet<Role> roles = new HashSet<>();
-//        roleRepository.findById(PredefinedRole.USER_ROLE).ifPresent(roles::add);
-//
-//        user.setRoles(roles);
-//
-//        try {
-//            user = userRepository.save(user);
-//        } catch (DataIntegrityViolationException exception) {
-//            throw new AppException(ErrorCode.USER_EXISTED);
-//        }
+        //        HashSet<Role> roles = new HashSet<>();
+        //        roleRepository.findById(PredefinedRole.USER_ROLE).ifPresent(roles::add);
+        //
+        //        user.setRoles(roles);
+        //
+        //        try {
+        //            user = userRepository.save(user);
+        //        } catch (DataIntegrityViolationException exception) {
+        //            throw new AppException(ErrorCode.USER_EXISTED);
+        //        }
 
         return userMapper.toUserResponse(userRepository.save(user));
     }
@@ -73,7 +72,7 @@ public class UserService {
     // Cập nhật thông tin user
     // Chỉ cho phép người dùng cập nhật thông tin của chính mình hoặc người dùng có quyền ADMIN
     @PostAuthorize("returnObject.username == authentication.name or hasRole('ADMIN')")
-    public UserResponse updateUser(String userId, UserUpdateRequest request){
+    public UserResponse updateUser(String userId, UserUpdateRequest request) {
         User user = userRepository.findById(userId).orElseThrow(() -> new AppException(ErrorCode.USER_NOT_FOUND));
 
         userMapper.updateUser(user, request);
@@ -90,23 +89,28 @@ public class UserService {
     // Xóa user
     // Chỉ cho phép người dùng có quyền ADMIN xóa người dùng
     @PreAuthorize("hasRole('ADMIN')")
-    public void userDelete(String userId){
+    public void userDelete(String userId) {
         userRepository.deleteById(userId);
     }
 
     // Lấy danh sách user
     // Chỉ cho phép người dùng có quyền ADMIN xem danh sách người dùng
-//    @PreAuthorize("hasRole('ADMIN')")
+    //    @PreAuthorize("hasRole('ADMIN')")
     @PreAuthorize("hasAuthority('APPROVE_POST')")
-    public List<UserResponse> getUsers(){
+    public List<UserResponse> getUsers() {
         return userRepository.findAll().stream().map(userMapper::toUserResponse).toList();
     }
+
     // Lấy thông tin user theo tên đăng nhập
-    public  UserResponse getMyInformation(){
+    public UserResponse getMyInformation() {
         // Lấy thông tin người dùng từ SecurityContextHolder
-        String username = org.springframework.security.core.context.SecurityContextHolder.getContext().getAuthentication().getName();
+        String username = org.springframework.security.core.context.SecurityContextHolder.getContext()
+                .getAuthentication()
+                .getName();
         // Tìm kiếm người dùng theo tên đăng nhập
-        User user = userRepository.findByUsername(username).orElseThrow(() -> new AppException(ErrorCode.USERNAME_NOT_FOUND));
+        User user = userRepository
+                .findByUsername(username)
+                .orElseThrow(() -> new AppException(ErrorCode.USERNAME_NOT_FOUND));
         // Chuyển đổi sang UserResponse và trả về
         return userMapper.toUserResponse(user);
     }
@@ -114,10 +118,12 @@ public class UserService {
     // Lấy thông tin user theo id
     // Chỉ cho phép người dùng xem thông tin của chính mình hoặc người dùng có quyền ADMIN
     @PostAuthorize("returnObject.username == authentication.name or hasRole('ADMIN')")
-    public UserResponse getUser(String id){
-        //Trả về một biến. Nếu không tìm thấy báo lỗi/ dùng lambda function
-        //Lambda function trong Java (giới thiệu từ Java 8) là cách viết ngắn gọn của một biểu thức hàm (functional interface implementatio
-        //(parameters) -> { body }
-        return userMapper.toUserResponse(userRepository.findById(id).orElseThrow(() -> new AppException(ErrorCode.USER_NOT_FOUND)));
+    public UserResponse getUser(String id) {
+        // Trả về một biến. Nếu không tìm thấy báo lỗi/ dùng lambda function
+        // Lambda function trong Java (giới thiệu từ Java 8) là cách viết ngắn gọn của một biểu thức hàm (functional
+        // interface implementatio
+        // (parameters) -> { body }
+        return userMapper.toUserResponse(
+                userRepository.findById(id).orElseThrow(() -> new AppException(ErrorCode.USER_NOT_FOUND)));
     }
 }

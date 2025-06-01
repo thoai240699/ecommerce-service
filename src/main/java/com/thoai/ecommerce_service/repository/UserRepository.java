@@ -1,14 +1,16 @@
 package com.thoai.ecommerce_service.repository;
 
-import com.thoai.ecommerce_service.entity.User;
+import java.util.Optional;
+
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
-import java.util.Optional;
+import com.thoai.ecommerce_service.entity.User;
 
-//Annotation @Repository  đánh dấu là một bean chuyên xử lý truy xuất dữ liệu (Data Access Object - DAO)
-//có thể không bắt buộc với interface extends JpaRepository, vì Spring Data JPA sẽ tự động tạo implementation và đăng ký bean
-//Bắt buộc nếu cần xử lý thêm custom logic hoặc thêm annotation xử lý transaction sau này.
+// Annotation @Repository  đánh dấu là một bean chuyên xử lý truy xuất dữ liệu (Data Access Object - DAO)
+// có thể không bắt buộc với interface extends JpaRepository, vì Spring Data JPA sẽ tự động tạo implementation và đăng
+// ký bean
+// Bắt buộc nếu cần xử lý thêm custom logic hoặc thêm annotation xử lý transaction sau này.
 
 @Repository
 public interface UserRepository extends JpaRepository<User, String> {
@@ -22,5 +24,4 @@ public interface UserRepository extends JpaRepository<User, String> {
     Optional<User> findByUsername(String username);
     // Tìm kiếm người dùng theo email
     Optional<User> findByEmail(String email);
-
 }

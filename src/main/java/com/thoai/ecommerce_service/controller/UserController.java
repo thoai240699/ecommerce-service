@@ -1,18 +1,21 @@
 package com.thoai.ecommerce_service.controller;
 
-import com.thoai.ecommerce_service.dto.response.ApiResponse;
-import com.thoai.ecommerce_service.dto.request.UserCreationRequest;
-import com.thoai.ecommerce_service.dto.request.UserUpdateRequest;
-import com.thoai.ecommerce_service.dto.response.UserResponse;
-import com.thoai.ecommerce_service.service.UserService;
+import java.util.List;
+
 import jakarta.validation.Valid;
-import lombok.RequiredArgsConstructor;
-import lombok.experimental.FieldDefaults;
-import lombok.extern.slf4j.Slf4j;
+
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
+import com.thoai.ecommerce_service.dto.request.UserCreationRequest;
+import com.thoai.ecommerce_service.dto.request.UserUpdateRequest;
+import com.thoai.ecommerce_service.dto.response.ApiResponse;
+import com.thoai.ecommerce_service.dto.response.UserResponse;
+import com.thoai.ecommerce_service.service.UserService;
+
+import lombok.RequiredArgsConstructor;
+import lombok.experimental.FieldDefaults;
+import lombok.extern.slf4j.Slf4j;
 
 @RestController
 @RequestMapping("/users")
@@ -27,10 +30,10 @@ public class UserController {
     // @RequestBody: Để mapping dữ liệu từ  request body vào UserCreationRequest
     // @Valid: Để kiểm tra dữ liệu đầu vào có hợp lệ hay không
     @PostMapping
-    ApiResponse<UserResponse> createUser(@RequestBody @Valid UserCreationRequest request){
-//        ApiResponse<User> apiResponse = new ApiResponse<>();
-//        apiResponse.setResult(userService.createUser(request));
-//        return apiResponse;
+    ApiResponse<UserResponse> createUser(@RequestBody @Valid UserCreationRequest request) {
+        //        ApiResponse<User> apiResponse = new ApiResponse<>();
+        //        apiResponse.setResult(userService.createUser(request));
+        //        return apiResponse;
         return ApiResponse.<UserResponse>builder()
                 .result(userService.createUser(request))
                 .build();
@@ -38,21 +41,21 @@ public class UserController {
 
     // Chức năng này sẽ lấy danh sách người dùng
     @GetMapping
-    ApiResponse<List<UserResponse>> getUsers(){
+    ApiResponse<List<UserResponse>> getUsers() {
         var authentication = SecurityContextHolder.getContext().getAuthentication();
 
         // In ra thông tin người dùng đã đăng nhập, khi thuc te se xoa sau
         log.info("Username: {}", authentication.getName());
         authentication.getAuthorities().forEach(grantedAuthority -> log.info(grantedAuthority.getAuthority()));
 
-    return ApiResponse.<List<UserResponse>>builder()
+        return ApiResponse.<List<UserResponse>>builder()
                 .result(userService.getUsers())
                 .build();
     }
 
     // @PathVariable: Để mapping dữ liệu từ request url vào biến userId
     @GetMapping("/{userId}")
-    ApiResponse<UserResponse> getUser(@PathVariable("userId") String userId){
+    ApiResponse<UserResponse> getUser(@PathVariable("userId") String userId) {
         return ApiResponse.<UserResponse>builder()
                 .result(userService.getUser(userId))
                 .build();
@@ -66,12 +69,11 @@ public class UserController {
                 .build();
     }
 
-
     // Chức năng này sẽ cập nhật thông tin người dùng
     // @PutMapping: Để cập nhật thông tin user
     // @RequestBody: Để mapping dữ liệu từ request body vào UserUpdateRequest
     @PutMapping("/{userId}")
-    UserResponse updateUser(@PathVariable String userId , @RequestBody UserUpdateRequest request){
+    UserResponse updateUser(@PathVariable String userId, @RequestBody UserUpdateRequest request) {
         return userService.updateUser(userId, request);
     }
 

@@ -1,13 +1,14 @@
 package com.thoai.ecommerce_service.exception;
 
-import com.thoai.ecommerce_service.dto.response.ApiResponse;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
-//@ControllerAdvice: Để xử lý các exception toàn cục trong ứng dụng
+import com.thoai.ecommerce_service.dto.response.ApiResponse;
+
+// @ControllerAdvice: Để xử lý các exception toàn cục trong ứng dụng
 @ControllerAdvice
 public class GlobalExceptionHandler {
 
@@ -53,5 +54,4 @@ public class GlobalExceptionHandler {
         apiResponse.setMessage(e.getFieldError().getDefaultMessage());
         return ResponseEntity.badRequest().body(apiResponse);
     }
-
 }

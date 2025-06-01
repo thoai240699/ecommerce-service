@@ -1,5 +1,12 @@
 package com.thoai.ecommerce_service.controller;
 
+import java.text.ParseException;
+
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
 import com.nimbusds.jose.JOSEException;
 import com.thoai.ecommerce_service.dto.request.AuthenticationRequest;
 import com.thoai.ecommerce_service.dto.request.IntrospectRequest;
@@ -8,14 +15,9 @@ import com.thoai.ecommerce_service.dto.response.ApiResponse;
 import com.thoai.ecommerce_service.dto.response.AuthenticationResponse;
 import com.thoai.ecommerce_service.dto.response.IntrospectResponse;
 import com.thoai.ecommerce_service.service.AuthenticationService;
+
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
-
-import java.text.ParseException;
 
 @RequestMapping("/auth")
 @RestController
@@ -45,8 +47,6 @@ public class AuthenticationController {
     @PostMapping("/logout")
     ApiResponse<Void> logout(@RequestBody LogoutRequest request) throws ParseException, JOSEException {
         authenticationService.logout(request);
-        return ApiResponse.<Void>builder()
-                .build();
+        return ApiResponse.<Void>builder().build();
     }
-
 }

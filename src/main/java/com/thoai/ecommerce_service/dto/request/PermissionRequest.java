@@ -1,7 +1,5 @@
 package com.thoai.ecommerce_service.dto.request;
 
-
-
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -16,5 +14,4 @@ import lombok.experimental.FieldDefaults;
 public class PermissionRequest {
     String name;
     String description;
-
 }

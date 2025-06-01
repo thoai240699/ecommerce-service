@@ -10,9 +10,9 @@ import org.springframework.http.MediaType;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.AuthenticationEntryPoint;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.thoai.ecommerce_service.dto.response.ApiResponse;
 import com.thoai.ecommerce_service.exception.ErrorCode;
-import com.fasterxml.jackson.databind.ObjectMapper;
 
 // Lớp này dùng để custom phản hồi khi người dùng chưa xác thực 401 Unauthorized
 public class JwtAuthenticationEntryPoint implements AuthenticationEntryPoint {
@@ -29,7 +29,7 @@ public class JwtAuthenticationEntryPoint implements AuthenticationEntryPoint {
         // Đặt mã trạng thái HTTP cho response
         response.setStatus(errorCode.getStatusCode().value());
         // Đặt kiểu dữ liệu trả về là JSON
-                response.setContentType(MediaType.APPLICATION_JSON_VALUE + ";charset=UTF-8");
+        response.setContentType(MediaType.APPLICATION_JSON_VALUE + ";charset=UTF-8");
 
         // Tạo đối tượng ApiResponse với mã lỗi và thông báo lỗi
         ApiResponse<?> apiResponse = ApiResponse.builder()

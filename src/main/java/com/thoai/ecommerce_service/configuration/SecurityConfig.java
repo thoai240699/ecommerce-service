@@ -19,35 +19,30 @@ import org.springframework.security.web.SecurityFilterChain;
 @EnableMethodSecurity
 public class SecurityConfig {
     private final String[] PUBLIC_ENDPOINTS = {
-            "/users",
-            "/auth/token",
-            "/auth/introspect",
-            "/auth/logout",
+        "/users", "/auth/token", "/auth/introspect", "/auth/logout",
     };
 
     @Autowired
     private CustomJwtDecoder customJwtDecoder;
 
-//    @Value("${jwt.signerKey}")
-//    private String signerKey;
+    //    @Value("${jwt.signerKey}")
+    //    private String signerKey;
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-        http.authorizeHttpRequests(request -> request
-                .requestMatchers(HttpMethod.POST, PUBLIC_ENDPOINTS).permitAll()
-                .anyRequest().authenticated());
-//                .requestMatchers(HttpMethod.GET, "/users").hasRole(Role.ADMIN.name())
-        http.oauth2ResourceServer(oauth2 ->
-                oauth2.jwt(jwtConfigurer ->
-                                jwtConfigurer.decoder(customJwtDecoder)
-                                        .jwtAuthenticationConverter(jwtAuthenticationConverter()))
-                        .authenticationEntryPoint(new JwtAuthenticationEntryPoint())
-        );
+        http.authorizeHttpRequests(request -> request.requestMatchers(HttpMethod.POST, PUBLIC_ENDPOINTS)
+                .permitAll()
+                .anyRequest()
+                .authenticated());
+        //                .requestMatchers(HttpMethod.GET, "/users").hasRole(Role.ADMIN.name())
+        http.oauth2ResourceServer(oauth2 -> oauth2.jwt(jwtConfigurer -> jwtConfigurer
+                        .decoder(customJwtDecoder)
+                        .jwtAuthenticationConverter(jwtAuthenticationConverter()))
+                .authenticationEntryPoint(new JwtAuthenticationEntryPoint()));
 
         http.csrf(AbstractHttpConfigurer::disable);
         return http.build();
     }
-
 
     @Bean
     JwtAuthenticationConverter jwtAuthenticationConverter() {
@@ -60,15 +55,14 @@ public class SecurityConfig {
         return jwtAuthenticationConverter;
     }
 
-
-/*
-      // Đã thay thế bằng CustomJwtDecoder để hỗ trợ introspection token
+    /*
+    // Đã thay thế bằng CustomJwtDecoder để hỗ trợ introspection token
     @Bean
     JwtDecoder jwtDecoder() {
-        SecretKeySpec keySpec = new SecretKeySpec(signerKey.getBytes(), "HS512");
-        return NimbusJwtDecoder.withSecretKey(keySpec)
-                .macAlgorithm(MacAlgorithm.HS512)
-                .build();
+    	SecretKeySpec keySpec = new SecretKeySpec(signerKey.getBytes(), "HS512");
+    	return NimbusJwtDecoder.withSecretKey(keySpec)
+    			.macAlgorithm(MacAlgorithm.HS512)
+    			.build();
     }*/
 
     @Bean

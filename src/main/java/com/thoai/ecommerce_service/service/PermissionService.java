@@ -1,16 +1,17 @@
 package com.thoai.ecommerce_service.service;
 
+import java.util.List;
+
+import org.springframework.stereotype.Service;
+
 import com.thoai.ecommerce_service.dto.request.PermissionRequest;
 import com.thoai.ecommerce_service.dto.response.PermissionResponse;
 import com.thoai.ecommerce_service.mapper.PermissionMapper;
 import com.thoai.ecommerce_service.repository.PermissionRepository;
+
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.stereotype.Service;
-
-import java.util.List;
-
 
 @Service
 @RequiredArgsConstructor
@@ -27,9 +28,8 @@ public class PermissionService {
     }
 
     // Lấy danh sách quyền
-    public List<PermissionResponse> getPermissions(){
-        return permissionRepository.findAll()
-                .stream()
+    public List<PermissionResponse> getPermissions() {
+        return permissionRepository.findAll().stream()
                 .map(permissionMapper::toPermissionResponse)
                 .toList();
     }

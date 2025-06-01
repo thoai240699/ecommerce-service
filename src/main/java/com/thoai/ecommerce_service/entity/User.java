@@ -1,16 +1,16 @@
 package com.thoai.ecommerce_service.entity;
 
+import java.time.LocalDateTime;
+import java.util.Set;
 
 import jakarta.persistence.*;
+
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.FieldDefaults;
-
-import java.time.LocalDateTime;
-import java.util.Set;
 
 @NoArgsConstructor
 @AllArgsConstructor
@@ -38,7 +38,7 @@ public class User {
     // @Column(name = "email")
     String email;
 
-//    @Column(name = "so_dien_thoai")
+    //    @Column(name = "so_dien_thoai")
     String phone;
 
     // @Enumerated(EnumType.STRING)
@@ -53,5 +53,4 @@ public class User {
     protected void onCreate() {
         this.createdAt = LocalDateTime.now();
     }
-
 }

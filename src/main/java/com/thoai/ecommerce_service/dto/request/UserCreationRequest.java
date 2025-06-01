@@ -1,10 +1,10 @@
 package com.thoai.ecommerce_service.dto.request;
 
-
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
+
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -32,5 +32,4 @@ public class UserCreationRequest {
 
     @Pattern(regexp = "^(0|\\+?84)(3|5|7|8|9)[0-9]{8}$", message = "Số điện thoại phải là số điện thoại viêt nam.")
     String phone;
-
 }
