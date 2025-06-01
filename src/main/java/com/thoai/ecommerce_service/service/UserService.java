@@ -60,6 +60,7 @@ public class UserService {
         //
         //        user.setRoles(roles);
         //
+        // Lưu user vào database, check lỗi trùng lặp tên dang nhap khi concurrent access more than one user
         //        try {
         //            user = userRepository.save(user);
         //        } catch (DataIntegrityViolationException exception) {
