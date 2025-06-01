@@ -22,4 +22,5 @@ public interface UserRepository extends JpaRepository<User, String> {
     Optional<User> findByUsername(String username);
     // Tìm kiếm người dùng theo email
     Optional<User> findByEmail(String email);
+
 }

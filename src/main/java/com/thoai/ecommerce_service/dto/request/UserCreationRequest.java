@@ -27,11 +27,9 @@ public class UserCreationRequest {
 
     String name;
 
-    @NotBlank(message = "Email không được để trống.")
     @Email(message = "Email không hợp lệ.")
     String email;
 
-    @NotBlank(message = "Số điện thoại không được để trống.")
     @Pattern(regexp = "^(0|\\+?84)(3|5|7|8|9)[0-9]{8}$", message = "Số điện thoại phải là số điện thoại viêt nam.")
     String phone;
 

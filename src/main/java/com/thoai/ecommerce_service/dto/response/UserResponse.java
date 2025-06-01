@@ -1,6 +1,5 @@
 package com.thoai.ecommerce_service.dto.response;
 
-import com.thoai.ecommerce_service.entity.Role;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -16,11 +15,11 @@ import java.util.Set;
 @Data
 @FieldDefaults(level = lombok.AccessLevel.PRIVATE)
 public class UserResponse {
-    String userId;
     String username;
     String name;
     String email;
     String phone;
-    Set<Role> roles;
+
+    Set<RoleResponse> roles;
     LocalDateTime createdAt;
 }

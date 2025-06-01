@@ -12,6 +12,8 @@ import org.mapstruct.MappingTarget;
 public interface UserMapper {
     @Mapping(target = "password", ignore = true) // Password phải mã hóa trước khi lưu
     User toUser(UserCreationRequest request);
+
+    @Mapping(target="roles", ignore = true) // Roles sẽ được xử lý riêng do là danh sách chuỗi ma user thi la set
     void updateUser(@MappingTarget User user, UserUpdateRequest request);
     UserResponse toUserResponse(User user);
 }
