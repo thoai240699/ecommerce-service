@@ -12,9 +12,15 @@ import com.thoai.ecommerce_service.entity.User;
 @Mapper(componentModel = "spring")
 public interface UserMapper {
     @Mapping(target = "password", ignore = true) // Password phải mã hóa trước khi lưu
+    @Mapping(target = "userId", ignore = true)
+    @Mapping(target = "roles", ignore = true)
+    @Mapping(target = "createdAt", ignore = true)
     User toUser(UserCreationRequest request);
 
-    @Mapping(target = "roles", ignore = true) // Roles sẽ được xử lý riêng do là danh sách chuỗi ma user thi la set
+    @Mapping(target = "roles", ignore = true)
+    @Mapping(target = "userId", ignore = true)
+    @Mapping(target = "username", ignore = true)
+    @Mapping(target = "createdAt", ignore = true)
     void updateUser(@MappingTarget User user, UserUpdateRequest request);
 
     UserResponse toUserResponse(User user);
