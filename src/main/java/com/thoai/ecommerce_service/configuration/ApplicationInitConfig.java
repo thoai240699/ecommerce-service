@@ -27,7 +27,7 @@ public class ApplicationInitConfig {
     PasswordEncoder passwordEncoder;
 
     @NonFinal
-    static final String ADMIN_USER_NAME = "admin";
+    static final String ADMIN_USER_NAME = "admin123";
 
     @NonFinal
     static final String ADMIN_PASSWORD = "admin123";
@@ -60,7 +60,7 @@ public class ApplicationInitConfig {
                         .build();
 
                 userRepository.save(user);
-                log.warn("admin user created with default password: admin123");
+                log.warn("admin123 user created with default password: admin123");
             }
         };
     }

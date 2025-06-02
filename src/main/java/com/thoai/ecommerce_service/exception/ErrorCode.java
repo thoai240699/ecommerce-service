@@ -16,6 +16,7 @@ public enum ErrorCode {
     EMAIL_EXISTS(2405, "Email đã được sử dụng", HttpStatus.BAD_REQUEST),
     UNAUTHORIZED(2406, "Bạn không có quyền truy cập", HttpStatus.FORBIDDEN),
     UNAUTHENTICATED(2407, "Bạn chưa đăng nhập", HttpStatus.UNAUTHORIZED),
+    ADDRESS_NOT_FOUND(2408, "Không tìm thấy địa chỉ với mã người dùng này", HttpStatus.NOT_FOUND),
     ;
 
     private int code;

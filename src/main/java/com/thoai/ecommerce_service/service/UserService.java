@@ -89,8 +89,8 @@ public class UserService {
 
     // Lấy danh sách user
     // Chỉ cho phép người dùng có quyền ADMIN xem danh sách người dùng
-    // @PreAuthorize("hasRole('ADMIN')")
-    @PreAuthorize("hasAuthority('APPROVE_POST')")
+    @PreAuthorize("hasRole('ADMIN')")
+    //@PreAuthorize("hasAuthority('APPROVE_POST')")
     public List<UserResponse> getUsers() {
         return userRepository.findAll().stream().map(userMapper::toUserResponse).toList();
     }

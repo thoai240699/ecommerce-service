@@ -1,4 +1,4 @@
-package com.thoai.ecommerce_service.dto.response;
+package com.thoai.ecommerce_service.dto.request;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -11,8 +11,7 @@ import lombok.experimental.FieldDefaults;
 @NoArgsConstructor
 @Builder
 @FieldDefaults(level = lombok.AccessLevel.PRIVATE)
-public class AddressReponse {
-    String userId;
+public class AddressUpdateRequest {
     String streetAddress;
     String ward;
     String district;
