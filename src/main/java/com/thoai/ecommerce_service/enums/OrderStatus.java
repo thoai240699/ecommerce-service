@@ -1,4 +1,4 @@
-package com.thoai.ecommerce_service.constant;
+package com.thoai.ecommerce_service.enums;
 
 public enum OrderStatus {
     PENDING,

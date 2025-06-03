@@ -1,22 +1,24 @@
 package com.thoai.ecommerce_service.configuration;
 
-import com.thoai.ecommerce_service.constant.PredefinedRole;
-import com.thoai.ecommerce_service.entity.Role;
-import com.thoai.ecommerce_service.entity.User;
-import com.thoai.ecommerce_service.repository.RoleRepository;
-import com.thoai.ecommerce_service.repository.UserRepository;
-import lombok.AccessLevel;
-import lombok.RequiredArgsConstructor;
-import lombok.experimental.FieldDefaults;
-import lombok.experimental.NonFinal;
-import lombok.extern.slf4j.Slf4j;
+import java.util.HashSet;
+
 import org.springframework.boot.ApplicationRunner;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
-import java.util.HashSet;
+import com.thoai.ecommerce_service.constant.PredefinedRole;
+import com.thoai.ecommerce_service.entity.Role;
+import com.thoai.ecommerce_service.entity.User;
+import com.thoai.ecommerce_service.repository.RoleRepository;
+import com.thoai.ecommerce_service.repository.UserRepository;
+
+import lombok.AccessLevel;
+import lombok.RequiredArgsConstructor;
+import lombok.experimental.FieldDefaults;
+import lombok.experimental.NonFinal;
+import lombok.extern.slf4j.Slf4j;
 
 @Configuration
 @RequiredArgsConstructor

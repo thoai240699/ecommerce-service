@@ -2,7 +2,7 @@ package com.thoai.ecommerce_service.dto.request;
 
 import java.math.BigDecimal;
 
-import com.thoai.ecommerce_service.constant.OrderStatus;
+import com.thoai.ecommerce_service.enums.OrderStatus;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

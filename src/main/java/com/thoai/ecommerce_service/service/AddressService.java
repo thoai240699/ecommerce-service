@@ -6,6 +6,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 
 import com.thoai.ecommerce_service.dto.request.AddressCreateRequest;
+import com.thoai.ecommerce_service.dto.request.AddressUpdateRequest;
 import com.thoai.ecommerce_service.dto.response.AddressReponse;
 import com.thoai.ecommerce_service.exception.AppException;
 import com.thoai.ecommerce_service.exception.ErrorCode;
@@ -71,5 +72,14 @@ public class AddressService {
             throw new AppException(ErrorCode.ADDRESS_NOT_FOUND);
         }
         addressRepository.deleteById(addressId);
+    }
+
+    // Cập nhật địa chỉ
+    @PreAuthorize("hasRole('ADMIN')")
+    public AddressReponse updateAddress(String addressId, AddressUpdateRequest request) {
+        var address =
+                addressRepository.findById(addressId).orElseThrow(() -> new AppException(ErrorCode.ADDRESS_NOT_FOUND));
+        addressMapper.updateAddress(address, request);
+        return addressMapper.toAddressResponse(addressRepository.save(address));
     }
 }

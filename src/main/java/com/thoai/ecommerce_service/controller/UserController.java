@@ -1,18 +1,21 @@
 package com.thoai.ecommerce_service.controller;
 
+import java.util.List;
+
+import jakarta.validation.Valid;
+
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.web.bind.annotation.*;
+
 import com.thoai.ecommerce_service.dto.request.UserCreationRequest;
 import com.thoai.ecommerce_service.dto.request.UserUpdateRequest;
 import com.thoai.ecommerce_service.dto.response.ApiResponse;
 import com.thoai.ecommerce_service.dto.response.UserResponse;
 import com.thoai.ecommerce_service.service.UserService;
-import jakarta.validation.Valid;
+
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @RestController
 @RequestMapping("/users")

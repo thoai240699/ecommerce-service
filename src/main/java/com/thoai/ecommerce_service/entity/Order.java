@@ -1,12 +1,14 @@
 package com.thoai.ecommerce_service.entity;
 
-import com.thoai.ecommerce_service.constant.OrderStatus;
-import jakarta.persistence.*;
-import lombok.*;
-import lombok.experimental.FieldDefaults;
-
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+
+import jakarta.persistence.*;
+
+import com.thoai.ecommerce_service.enums.OrderStatus;
+
+import lombok.*;
+import lombok.experimental.FieldDefaults;
 
 @NoArgsConstructor
 @AllArgsConstructor
