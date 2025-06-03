@@ -1,11 +1,12 @@
 package com.thoai.ecommerce_service.entity;
 
-import jakarta.persistence.*;
-import lombok.*;
-import lombok.experimental.FieldDefaults;
-
 import java.time.LocalDateTime;
 import java.util.Set;
+
+import jakarta.persistence.*;
+
+import lombok.*;
+import lombok.experimental.FieldDefaults;
 
 @NoArgsConstructor
 @AllArgsConstructor
@@ -37,7 +38,10 @@ public class User {
     String phone;
 
     @ManyToMany
-    @JoinTable(name = "nguoi_dung_vai_tro", joinColumns = @JoinColumn(name = "ma_nguoi_dung"), inverseJoinColumns = @JoinColumn(name = "ten_vai_tro"))
+    @JoinTable(
+            name = "nguoi_dung_vai_tro",
+            joinColumns = @JoinColumn(name = "ma_nguoi_dung"),
+            inverseJoinColumns = @JoinColumn(name = "ten_vai_tro"))
     Set<Role> roles;
 
     @Column(name = "thoi_gian_tao")

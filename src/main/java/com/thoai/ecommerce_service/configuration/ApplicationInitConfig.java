@@ -44,6 +44,10 @@ public class ApplicationInitConfig {
                         .name(PredefinedRole.CUSTOMER_ROLE)
                         .description("Vai trò khách hàng")
                         .build());
+                roleRepository.save(Role.builder()
+                        .name(PredefinedRole.SELLER_ROLE)
+                        .description("Vai trò nhân viên bán hàng")
+                        .build());
 
                 Role adminRole = roleRepository.save(Role.builder()
                         .name(PredefinedRole.ADMIN_ROLE)

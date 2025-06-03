@@ -19,14 +19,14 @@ import org.springframework.security.web.SecurityFilterChain;
 @EnableMethodSecurity
 public class SecurityConfig {
     private static final String[] PUBLIC_ENDPOINTS = {
-        "/users", "/auth/token", "/auth/introspect", "/auth/logout",
+        "/users", "/auth/token", "/auth/introspect", "/auth/logout"
     };
 
     @Autowired
     private CustomJwtDecoder customJwtDecoder;
 
-    //    @Value("${jwt.signerKey}")
-    //    private String signerKey;
+    // @Value("${jwt.signerKey}")
+    // private String signerKey;
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
@@ -34,7 +34,7 @@ public class SecurityConfig {
                 .permitAll()
                 .anyRequest()
                 .authenticated());
-        //                .requestMatchers(HttpMethod.GET, "/users").hasRole(Role.ADMIN.name())
+        // .requestMatchers(HttpMethod.GET, "/users").hasRole(Role.ADMIN.name())
         http.oauth2ResourceServer(oauth2 -> oauth2.jwt(jwtConfigurer -> jwtConfigurer
                         .decoder(customJwtDecoder)
                         .jwtAuthenticationConverter(jwtAuthenticationConverter()))
@@ -56,14 +56,16 @@ public class SecurityConfig {
     }
 
     /*
-    // Đã thay thế bằng CustomJwtDecoder để hỗ trợ introspection token
-    @Bean
-    JwtDecoder jwtDecoder() {
-    	SecretKeySpec keySpec = new SecretKeySpec(signerKey.getBytes(), "HS512");
-    	return NimbusJwtDecoder.withSecretKey(keySpec)
-    			.macAlgorithm(MacAlgorithm.HS512)
-    			.build();
-    }*/
+     * // Đã thay thế bằng CustomJwtDecoder để hỗ trợ introspection token
+     *
+     * @Bean
+     * JwtDecoder jwtDecoder() {
+     * SecretKeySpec keySpec = new SecretKeySpec(signerKey.getBytes(), "HS512");
+     * return NimbusJwtDecoder.withSecretKey(keySpec)
+     * .macAlgorithm(MacAlgorithm.HS512)
+     * .build();
+     * }
+     */
 
     @Bean
     PasswordEncoder passwordEncoder() {

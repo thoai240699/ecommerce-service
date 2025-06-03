@@ -1,10 +1,11 @@
 package com.thoai.ecommerce_service.entity;
 
+import java.util.Set;
+
 import jakarta.persistence.*;
+
 import lombok.*;
 import lombok.experimental.FieldDefaults;
-
-import java.util.Set;
 
 @NoArgsConstructor
 @AllArgsConstructor
@@ -23,6 +24,9 @@ public class Role {
     String description;
 
     @ManyToMany
-    @JoinTable(name="vai_tro_quyen_han", joinColumns =@JoinColumn(name = "ten_vai_tro"), inverseJoinColumns = @JoinColumn(name="ten_quyen_han"))
+    @JoinTable(
+            name = "vai_tro_quyen_han",
+            joinColumns = @JoinColumn(name = "ten_vai_tro"),
+            inverseJoinColumns = @JoinColumn(name = "ten_quyen_han"))
     Set<Permission> permissions;
 }

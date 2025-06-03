@@ -1,6 +1,8 @@
 package com.thoai.ecommerce_service.dto.request;
 
-import jakarta.validation.constraints.NotBlank;
+import java.math.BigDecimal;
+
+import com.thoai.ecommerce_service.constant.OrderStatus;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -13,12 +15,8 @@ import lombok.experimental.FieldDefaults;
 @NoArgsConstructor
 @Builder
 @FieldDefaults(level = lombok.AccessLevel.PRIVATE)
-public class AddressCreateRequest {
-    @NotBlank(message = "Mã người dùng không được để trống")
-    String userId;
-
-    String streetAddress;
-    String ward;
-    String district;
-    String city;
+public class OrderUpdateRequest {
+    String addressId;
+    BigDecimal totalAmount;
+    OrderStatus status;
 }

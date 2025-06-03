@@ -1,7 +1,9 @@
 package com.thoai.ecommerce_service.dto.response;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
-import java.util.Set;
+
+import com.thoai.ecommerce_service.constant.OrderStatus;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -9,18 +11,16 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.experimental.FieldDefaults;
 
+@Data
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-@Data
 @FieldDefaults(level = lombok.AccessLevel.PRIVATE)
-public class UserResponse {
+public class OrderResponse {
+    String orderId;
     String userId;
-    String username;
-    String name;
-    String email;
-    String phone;
-
-    Set<RoleResponse> roles;
+    String addressId;
+    BigDecimal totalAmount;
+    OrderStatus status;
     LocalDateTime createdAt;
 }

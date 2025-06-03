@@ -1,5 +1,10 @@
 package com.thoai.ecommerce_service.service;
 
+import java.util.List;
+
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.stereotype.Service;
+
 import com.thoai.ecommerce_service.dto.request.AddressCreateRequest;
 import com.thoai.ecommerce_service.dto.response.AddressReponse;
 import com.thoai.ecommerce_service.exception.AppException;
@@ -7,12 +12,9 @@ import com.thoai.ecommerce_service.exception.ErrorCode;
 import com.thoai.ecommerce_service.mapper.AddressMapper;
 import com.thoai.ecommerce_service.repository.AddressRepository;
 import com.thoai.ecommerce_service.repository.UserRepository;
+
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
-import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.stereotype.Service;
-
-import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -26,11 +28,12 @@ public class AddressService {
     // Chỉ cho phép người dùng tao thông tin của chính mình hoặc người dùng có
     // quyền ADMIN
     public AddressReponse createAddress(AddressCreateRequest request) {
-        var user = userRepository.findById(request.getUserId())
+        var user = userRepository
+                .findById(request.getUserId())
                 .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_FOUND));
 
         var address = addressMapper.toAddress(request);
-        address.setUser(user); //// Gán đối tượng User vào Entity Address
+        address.setUser(user); // // Gán đối tượng User vào Entity Address
         return addressMapper.toAddressResponse(addressRepository.save(address));
     }
 
@@ -46,9 +49,7 @@ public class AddressService {
     @PreAuthorize("hasRole('ADMIN')")
     public List<AddressReponse> getAddressesByUserId(String userId) {
         var addresses = addressRepository.findByUser_UserId(userId);
-        return addresses.stream()
-                .map(addressMapper::toAddressResponse)
-                .toList();
+        return addresses.stream().map(addressMapper::toAddressResponse).toList();
     }
 
     // User tự lấy danh sách địa chỉ của mình
@@ -56,12 +57,11 @@ public class AddressService {
         String username = org.springframework.security.core.context.SecurityContextHolder.getContext()
                 .getAuthentication()
                 .getName();
-        var user = userRepository.findByUsername(username)
+        var user = userRepository
+                .findByUsername(username)
                 .orElseThrow(() -> new AppException(ErrorCode.USERNAME_NOT_FOUND));
         var addresses = addressRepository.findByUser_UserId(user.getUserId());
-        return addresses.stream()
-                .map(addressMapper::toAddressResponse)
-                .toList();
+        return addresses.stream().map(addressMapper::toAddressResponse).toList();
     }
 
     // Xóa địa chỉ
@@ -72,5 +72,4 @@ public class AddressService {
         }
         addressRepository.deleteById(addressId);
     }
-
 }

@@ -1,10 +1,11 @@
 package com.thoai.ecommerce_service.mapper;
 
+import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
+
 import com.thoai.ecommerce_service.dto.request.AddressCreateRequest;
 import com.thoai.ecommerce_service.dto.response.AddressReponse;
 import com.thoai.ecommerce_service.entity.Address;
-import org.mapstruct.Mapper;
-import org.mapstruct.Mapping;
 
 @Mapper(componentModel = "spring")
 public interface AddressMapper {
@@ -14,5 +15,4 @@ public interface AddressMapper {
 
     @Mapping(source = "user.userId", target = "userId")
     AddressReponse toAddressResponse(Address address);
-
 }

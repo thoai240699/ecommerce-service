@@ -1,6 +1,7 @@
 package com.thoai.ecommerce_service.entity;
 
 import jakarta.persistence.*;
+
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
@@ -35,5 +36,4 @@ public class Address {
 
     @Column(name = "tinh_thanh")
     String city;
-
 }

@@ -2,10 +2,10 @@ package com.thoai.ecommerce_service.entity;
 
 import java.util.Date;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
-import jakarta.persistence.Column;
 
 import lombok.*;
 import lombok.experimental.FieldDefaults;

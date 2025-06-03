@@ -1,5 +1,13 @@
 package com.thoai.ecommerce_service.service;
 
+import java.util.HashSet;
+import java.util.List;
+
+import org.springframework.security.access.prepost.PostAuthorize;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.stereotype.Service;
+
 import com.thoai.ecommerce_service.constant.PredefinedRole;
 import com.thoai.ecommerce_service.dto.request.UserCreationRequest;
 import com.thoai.ecommerce_service.dto.request.UserUpdateRequest;
@@ -11,16 +19,10 @@ import com.thoai.ecommerce_service.exception.ErrorCode;
 import com.thoai.ecommerce_service.mapper.UserMapper;
 import com.thoai.ecommerce_service.repository.RoleRepository;
 import com.thoai.ecommerce_service.repository.UserRepository;
+
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.security.access.prepost.PostAuthorize;
-import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.stereotype.Service;
-
-import java.util.HashSet;
-import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -52,6 +54,7 @@ public class UserService {
         roleRepository.findById(PredefinedRole.CUSTOMER_ROLE).ifPresent(roles::add);
         user.setRoles(roles);
 
+        // Cách bắt lỗi tốt hơn, khi tạo nhiều user cùng lúc
         // Lưu user vào database, check lỗi trùng lặp tên dang nhap khi concurrent
         // try {
         // user = userRepository.save(user);
@@ -90,7 +93,7 @@ public class UserService {
     // Lấy danh sách user
     // Chỉ cho phép người dùng có vai trò ADMIN xem danh sách người dùng
     @PreAuthorize("hasRole('ADMIN')")
-    //@PreAuthorize("hasAuthority('APPROVE_POST')")
+    // @PreAuthorize("hasAuthority('APPROVE_POST')")
     public List<UserResponse> getUsers() {
         return userRepository.findAll().stream().map(userMapper::toUserResponse).toList();
     }
