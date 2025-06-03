@@ -81,14 +81,14 @@ public class UserService {
     }
 
     // Xóa user
-    // Chỉ cho phép người dùng có quyền ADMIN xóa người dùng
+    // Chỉ cho phép người dùng có vai trò ADMIN xóa người dùng
     @PreAuthorize("hasRole('ADMIN')")
     public void userDelete(String userId) {
         userRepository.deleteById(userId);
     }
 
     // Lấy danh sách user
-    // Chỉ cho phép người dùng có quyền ADMIN xem danh sách người dùng
+    // Chỉ cho phép người dùng có vai trò ADMIN xem danh sách người dùng
     @PreAuthorize("hasRole('ADMIN')")
     //@PreAuthorize("hasAuthority('APPROVE_POST')")
     public List<UserResponse> getUsers() {

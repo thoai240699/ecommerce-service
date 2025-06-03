@@ -41,4 +41,22 @@ public class AddressController {
                 .result(addressService.getAddressesByUserId(userId))
                 .build();
     }
+
+    // User tự lấy danh sách địa chỉ của mình
+    @GetMapping("/myAddresses")
+    ApiResponse<List<AddressReponse>> getMyAddresses() {
+        return ApiResponse.<List<AddressReponse>>builder()
+                .result(addressService.getMyAddresses())
+                .build();
+    }
+
+    // Xóa địa chỉ
+    @DeleteMapping("/{addressId}")
+    ApiResponse<String> deleteAddress(@PathVariable("addressId") String addressId) {
+        addressService.deleteAddress(addressId);
+        return ApiResponse.<String>builder()
+                .result("Địa chỉ đã được xóa thành công")
+                .build();
+    }
+
 }

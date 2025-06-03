@@ -51,4 +51,26 @@ public class AddressService {
                 .toList();
     }
 
+    // User tự lấy danh sách địa chỉ của mình
+    public List<AddressReponse> getMyAddresses() {
+        String username = org.springframework.security.core.context.SecurityContextHolder.getContext()
+                .getAuthentication()
+                .getName();
+        var user = userRepository.findByUsername(username)
+                .orElseThrow(() -> new AppException(ErrorCode.USERNAME_NOT_FOUND));
+        var addresses = addressRepository.findByUser_UserId(user.getUserId());
+        return addresses.stream()
+                .map(addressMapper::toAddressResponse)
+                .toList();
+    }
+
+    // Xóa địa chỉ
+    @PreAuthorize("hasRole('ADMIN')")
+    public void deleteAddress(String addressId) {
+        if (!addressRepository.existsById(addressId)) {
+            throw new AppException(ErrorCode.ADDRESS_NOT_FOUND);
+        }
+        addressRepository.deleteById(addressId);
+    }
+
 }
