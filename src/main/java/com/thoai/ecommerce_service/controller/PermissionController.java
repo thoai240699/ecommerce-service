@@ -1,17 +1,15 @@
 package com.thoai.ecommerce_service.controller;
 
-import java.util.List;
-
-import org.springframework.web.bind.annotation.*;
-
 import com.thoai.ecommerce_service.dto.request.PermissionRequest;
 import com.thoai.ecommerce_service.dto.response.ApiResponse;
 import com.thoai.ecommerce_service.dto.response.PermissionResponse;
 import com.thoai.ecommerce_service.service.PermissionService;
-
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/permissions")
@@ -21,7 +19,7 @@ import lombok.extern.slf4j.Slf4j;
 public class PermissionController {
     PermissionService permissionService;
 
-    // Tạo quyền mới
+    // Tạo quyền mới - quyền PERMISSION_CREATE
     @PostMapping
     ApiResponse<PermissionResponse> createPermission(@RequestBody PermissionRequest request) {
         return ApiResponse.<PermissionResponse>builder()
@@ -29,7 +27,7 @@ public class PermissionController {
                 .build();
     }
 
-    // Lấy danh sách quyền
+    // Lấy danh sách quyền - quyền PERMISSION_READ
     @GetMapping
     ApiResponse<List<PermissionResponse>> getPermissions() {
         return ApiResponse.<List<PermissionResponse>>builder()
@@ -37,7 +35,7 @@ public class PermissionController {
                 .build();
     }
 
-    // Xóa quyền
+    // Xóa quyền - quyền PERMISSION_DELETE
     @DeleteMapping("/{permission}")
     ApiResponse<Void> deletePermission(@PathVariable String permission) {
         permissionService.deletePermission(permission);

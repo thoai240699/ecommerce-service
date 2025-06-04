@@ -1,21 +1,17 @@
 package com.thoai.ecommerce_service.controller;
 
-import java.util.List;
-
-import jakarta.validation.Valid;
-
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.web.bind.annotation.*;
-
 import com.thoai.ecommerce_service.dto.request.UserCreationRequest;
 import com.thoai.ecommerce_service.dto.request.UserUpdateRequest;
 import com.thoai.ecommerce_service.dto.response.ApiResponse;
 import com.thoai.ecommerce_service.dto.response.UserResponse;
 import com.thoai.ecommerce_service.service.UserService;
-
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/users")
@@ -25,10 +21,8 @@ import lombok.extern.slf4j.Slf4j;
 public class UserController {
     UserService userService;
 
-    // Chức năng này sẽ tạo mới một người dùng
-    // @PostMapping: Để tạo mới user
-    // @RequestBody: Để mapping dữ liệu từ  request body vào UserCreationRequest
-    // @Valid: Để kiểm tra dữ liệu đầu vào có hợp lệ hay không
+    // Tạo tài khoản - Endpoint công khai không cần đăng nhập
+    // Nhưng chỉ có ADMIN mới có thể tạo account có role ADMIN hoặc SELLER
     @PostMapping
     ApiResponse<UserResponse> createUser(@RequestBody @Valid UserCreationRequest request) {
         return ApiResponse.<UserResponse>builder()
@@ -36,21 +30,15 @@ public class UserController {
                 .build();
     }
 
-    // Chức năng này sẽ lấy danh sách người dùng
     @GetMapping
     ApiResponse<List<UserResponse>> getUsers() {
-        var authentication = SecurityContextHolder.getContext().getAuthentication();
-
-        // In ra thông tin người dùng đã đăng nhập, khi thuc te se xoa sau
-        log.info("Username: {}", authentication.getName());
-        authentication.getAuthorities().forEach(grantedAuthority -> log.info(grantedAuthority.getAuthority()));
-
+        log.info("In getUsers");
         return ApiResponse.<List<UserResponse>>builder()
                 .result(userService.getUsers())
                 .build();
     }
 
-    // @PathVariable: Để mapping dữ liệu từ request url vào biến userId
+    // Lấy thông tin user theo userId - quyền USER_READ_ALL hoặc chính user đó
     @GetMapping("/{userId}")
     ApiResponse<UserResponse> getUser(@PathVariable("userId") String userId) {
         return ApiResponse.<UserResponse>builder()
@@ -58,7 +46,6 @@ public class UserController {
                 .build();
     }
 
-    // Chức năng này sẽ lấy thông tin người dùng hiện tại
     @GetMapping("/myInfo")
     ApiResponse<UserResponse> getMyInformation() {
         return ApiResponse.<UserResponse>builder()
@@ -66,16 +53,12 @@ public class UserController {
                 .build();
     }
 
-    // Chức năng này sẽ cập nhật thông tin người dùng
-    // @PutMapping: Để cập nhật thông tin user
-    // @RequestBody: Để mapping dữ liệu từ request body vào UserUpdateRequest
+    // Cập nhật user - quyền USER_UPDATE
     @PutMapping("/{userId}")
     UserResponse updateUser(@PathVariable String userId, @RequestBody UserUpdateRequest request) {
         return userService.updateUser(userId, request);
     }
 
-    // Chức năng này sẽ xóa người dùng
-    // @DeleteMapping: Để xóa user
     @DeleteMapping("/{userId}")
     ApiResponse<String> deleteUser(@PathVariable String userId) {
         userService.userDelete(userId);

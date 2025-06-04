@@ -1,19 +1,16 @@
 package com.thoai.ecommerce_service.controller;
 
-import java.util.List;
-
-import jakarta.validation.Valid;
-
-import org.springframework.web.bind.annotation.*;
-
 import com.thoai.ecommerce_service.dto.request.OrderCreationRequest;
 import com.thoai.ecommerce_service.dto.request.OrderUpdateRequest;
 import com.thoai.ecommerce_service.dto.response.ApiResponse;
 import com.thoai.ecommerce_service.dto.response.OrderResponse;
 import com.thoai.ecommerce_service.service.OrderService;
-
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/orders")
@@ -22,7 +19,7 @@ import lombok.experimental.FieldDefaults;
 public class OrderController {
     OrderService orderService;
 
-    // Tạo đơn hàng
+    // Tạo đơn hàng - quyền ORDER_CREATE
     @PostMapping
     ApiResponse<OrderResponse> createOrder(@RequestBody @Valid OrderCreationRequest request) {
         return ApiResponse.<OrderResponse>builder()
@@ -30,7 +27,7 @@ public class OrderController {
                 .build();
     }
 
-    // Lấy danh sách đơn hàng
+    // Lấy danh sách đơn hàng - quyền ORDER_READ_ALL (ADMIN và SELLER)
     @GetMapping
     ApiResponse<List<OrderResponse>> getAllOrders() {
         return ApiResponse.<List<OrderResponse>>builder()
@@ -38,7 +35,7 @@ public class OrderController {
                 .build();
     }
 
-    // Lấy đơn hàng theo ID đơn hàng
+    // Lấy đơn hàng theo ID đơn hàng - quyền ORDER_READ_ALL hoặc chủ đơn hàng
     @GetMapping("/{orderId}")
     ApiResponse<OrderResponse> getOrderById(@PathVariable("orderId") String orderId) {
         return ApiResponse.<OrderResponse>builder()
@@ -46,7 +43,7 @@ public class OrderController {
                 .build();
     }
 
-    // Lấy đơn hàng theo của chính người dùng
+    // Lấy đơn hàng của chính người dùng - quyền ORDER_READ
     @GetMapping("/myOrders")
     ApiResponse<List<OrderResponse>> getOrdersByUserId() {
         return ApiResponse.<List<OrderResponse>>builder()
@@ -54,7 +51,7 @@ public class OrderController {
                 .build();
     }
 
-    // Cập nhật đơn hàng
+    // Cập nhật đơn hàng - quyền ORDER_UPDATE (ADMIN và SELLER)
     @PutMapping("/{orderId}")
     ApiResponse<OrderResponse> updateOrder(
             @PathVariable("orderId") String orderId, @RequestBody OrderUpdateRequest request) {
@@ -63,12 +60,28 @@ public class OrderController {
                 .build();
     }
 
-    // Xóa đơn hàng
+    // Xóa đơn hàng - quyền ORDER_DELETE (chỉ ADMIN)
     @DeleteMapping("/{orderId}")
     ApiResponse<String> deleteOrder(@PathVariable("orderId") String orderId) {
         orderService.deleteOrder(orderId);
         return ApiResponse.<String>builder()
                 .result("Đơn hàng đã được xóa thành công")
+                .build();
+    }
+
+    // Hủy đơn hàng - quyền ORDER_CANCEL
+    @PutMapping("/{orderId}/cancel")
+    ApiResponse<OrderResponse> cancelOrder(@PathVariable("orderId") String orderId) {
+        return ApiResponse.<OrderResponse>builder()
+                .result(orderService.cancelOrder(orderId))
+                .build();
+    }
+
+    // Duyệt đơn hàng - quyền ORDER_APPROVE (ADMIN và SELLER)
+    @PutMapping("/{orderId}/approve")
+    ApiResponse<OrderResponse> approveOrder(@PathVariable("orderId") String orderId) {
+        return ApiResponse.<OrderResponse>builder()
+                .result(orderService.approveOrder(orderId))
                 .build();
     }
 }

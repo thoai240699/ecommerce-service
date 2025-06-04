@@ -1,19 +1,16 @@
 package com.thoai.ecommerce_service.controller;
 
-import java.util.List;
-
-import jakarta.validation.Valid;
-
-import org.springframework.web.bind.annotation.*;
-
 import com.thoai.ecommerce_service.dto.request.AddressCreateRequest;
 import com.thoai.ecommerce_service.dto.request.AddressUpdateRequest;
 import com.thoai.ecommerce_service.dto.response.AddressReponse;
 import com.thoai.ecommerce_service.dto.response.ApiResponse;
 import com.thoai.ecommerce_service.service.AddressService;
-
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RequestMapping("/addresses")
 @RestController
@@ -46,7 +43,7 @@ public class AddressController {
                 .build();
     }
 
-    // User tự lấy danh sách địa chỉ của mình
+    // User tự lấy danh sách địa chỉ của mình - quyền ADDRESS_READ
     @GetMapping("/myAddresses")
     ApiResponse<List<AddressReponse>> getMyAddresses() {
         return ApiResponse.<List<AddressReponse>>builder()
@@ -54,7 +51,7 @@ public class AddressController {
                 .build();
     }
 
-    // Xóa địa chỉ
+    // Xóa địa chỉ - quyền ADDRESS_DELETE
     @DeleteMapping("/{addressId}")
     ApiResponse<String> deleteAddress(@PathVariable("addressId") String addressId) {
         addressService.deleteAddress(addressId);
@@ -63,7 +60,7 @@ public class AddressController {
                 .build();
     }
 
-    // Cập nhật địa chỉ
+    // Cập nhật địa chỉ - quyền ADDRESS_UPDATE
     @PutMapping("/{addressId}")
     ApiResponse<AddressReponse> updateAddress(
             @PathVariable("addressId") String addressId, @RequestBody @Valid AddressUpdateRequest request) {

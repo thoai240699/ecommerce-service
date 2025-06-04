@@ -16,8 +16,10 @@ import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.access.prepost.PostAuthorize;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 
 import java.util.HashSet;
 import java.util.List;
@@ -48,8 +50,8 @@ public class UserService {
         user.setPassword(passwordEncoder.encode(request.getPassword()));
 
         HashSet<Role> roles = new HashSet<>();
-        // Nếu không có roles nào được cung cấp, gán vai trò mặc định là CUSTOMER
-        roleRepository.findById(PredefinedRole.CUSTOMER_ROLE).ifPresent(roles::add);
+        // Nếu không có roles nào được cung cấp, gán vai trò mặc định là SHOP_ROLE
+        roleRepository.findById(PredefinedRole.SHOP_ROLE).ifPresent(roles::add);
         user.setRoles(roles);
 
         // Cách bắt lỗi tốt hơn, khi tạo nhiều user cùng lúc
@@ -63,64 +65,57 @@ public class UserService {
         return userMapper.toUserResponse(userRepository.save(user));
     }
 
-    // Cập nhật thông tin user
-    // Chỉ cho phép người dùng cập nhật thông tin của chính mình hoặc người dùng có
-    // quyền ADMIN
-    @PostAuthorize("returnObject.username == authentication.name or hasRole('ADMIN')")
-    public UserResponse updateUser(String userId, UserUpdateRequest request) {
-        User user = userRepository.findById(userId).orElseThrow(() -> new AppException(ErrorCode.USER_NOT_FOUND));
 
-        userMapper.updateUser(user, request);
+
+// Cập nhật user - chỉ chính user đó hoặc admin có quyền USER_UPDATE
+@PostAuthorize("returnObject.username == authentication.name or hasAuthority('USER_UPDATE')")
+public UserResponse updateUser(String userId, UserUpdateRequest request) {
+    User user = userRepository.findById(userId).orElseThrow(() -> new AppException(ErrorCode.USER_NOT_FOUND));
+
+    userMapper.updateUser(user, request);
+    if (StringUtils.hasText(request.getPassword())) {
         user.setPassword(passwordEncoder.encode(request.getPassword()));
-
-        // Goi repository để lấy danh sách role từ request
-        var roles = roleRepository.findAllById(request.getRoles());
-        // Chuyển đổi danh sách role thành HashSet và gán cho user
-        user.setRoles(new HashSet<>(roles));
-
-        return userMapper.toUserResponse(userRepository.save(user));
     }
 
-    // Xóa user
-    // Chỉ cho phép người dùng có vai trò ADMIN xóa người dùng
-    @PreAuthorize("hasRole('ADMIN')")
-    public void userDelete(String userId) {
-        userRepository.deleteById(userId);
-    }
+    var roles = roleRepository.findAllById(request.getRoles());
+    user.setRoles(new HashSet<>(roles));
 
-    // Lấy danh sách user
-    // Chỉ cho phép người dùng có vai trò ADMIN xem danh sách người dùng
-    @PreAuthorize("hasRole('ADMIN')")
-    // @PreAuthorize("hasAuthority('APPROVE_POST')")
-    public List<UserResponse> getUsers() {
-        return userRepository.findAll().stream().map(userMapper::toUserResponse).toList();
-    }
+    return userMapper.toUserResponse(userRepository.save(user));
+}
 
-    // Lấy thông tin user theo tên đăng nhập
-    public UserResponse getMyInformation() {
-        // Lấy thông tin người dùng từ SecurityContextHolder
-        String username = org.springframework.security.core.context.SecurityContextHolder.getContext()
-                .getAuthentication()
-                .getName();
-        // Tìm kiếm người dùng theo tên đăng nhập
-        User user = userRepository
-                .findByUsername(username)
-                .orElseThrow(() -> new AppException(ErrorCode.USERNAME_NOT_FOUND));
-        // Chuyển đổi sang UserResponse và trả về
-        return userMapper.toUserResponse(user);
+// Xóa user - chỉ admin có quyền USER_DELETE
+@PreAuthorize("hasAuthority('USER_DELETE')")
+public void userDelete(String userId) {
+    if (!userRepository.existsById(userId)) {
+        throw new AppException(ErrorCode.USER_NOT_FOUND);
     }
+    userRepository.deleteById(userId);
+}
 
-    // Lấy thông tin user theo id
-    // Chỉ cho phép người dùng xem thông tin của chính mình hoặc người dùng có quyền
-    // ADMIN
-    @PostAuthorize("returnObject.username == authentication.name or hasRole('ADMIN')")
-    public UserResponse getUser(String id) {
-        // Trả về một biến. Nếu không tìm thấy báo lỗi/ dùng lambda function
-        // Lambda function trong Java (giới thiệu từ Java 8) là cách viết ngắn gọn của
-        // một biểu thức hàm (functional
-        // interface implementatio
-        // (parameters) -> { body }
-        return userMapper.toUserResponse(
-                userRepository.findById(id).orElseThrow(() -> new AppException(ErrorCode.USER_NOT_FOUND)));
-    }
+// Lấy danh sách tất cả user - chỉ admin có quyền USER_READ_ALL
+@PreAuthorize("hasAuthority('USER_READ_ALL')")
+public List<UserResponse> getUsers() {
+    log.info("In getUsers");
+    return userRepository.findAll().stream().map(userMapper::toUserResponse).toList();
+}
+
+// Lấy thông tin cá nhân - chỉ cần đăng nhập
+@PreAuthorize("hasAuthority('USER_READ')")
+public UserResponse getMyInformation() {
+    var context = SecurityContextHolder.getContext();
+    String name = context.getAuthentication().getName();
+
+    User user = userRepository.findByUsername(name)
+            .orElseThrow(() -> new AppException(ErrorCode.USERNAME_NOT_FOUND));
+
+    return userMapper.toUserResponse(user);
+}
+
+// Lấy user theo ID - chỉ chính user đó hoặc admin có quyền USER_READ
+@PostAuthorize("returnObject.username == authentication.name or hasAuthority('USER_READ_ALL')")
+public UserResponse getUser(String id) {
+    log.info("In getUser");
+    return userMapper.toUserResponse(
+            userRepository.findById(id).orElseThrow(() -> new AppException(ErrorCode.USER_NOT_FOUND)));
+}
 }
