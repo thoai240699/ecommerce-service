@@ -533,25 +533,83 @@ ecommerce-service/
 ├── src/
 │   ├── main/
 │   │   ├── java/com/thoai/ecommerce_service/
-│   │   │   ├── configuration/       # Security & JWT config
-│   │   │   ├── constant/           # Predefined constants
-│   │   │   ├── controller/         # REST Controllers
-│   │   │   ├── dto/               # Data Transfer Objects
-│   │   │   │   ├── request/       # Request DTOs
-│   │   │   │   └── response/      # Response DTOs
-│   │   │   ├── entity/            # JPA Entities
-│   │   │   ├── enums/             # Enum classes
-│   │   │   ├── exception/         # Exception handling
-│   │   │   ├── mapper/            # MapStruct mappers
-│   │   │   ├── repository/        # JPA Repositories
-│   │   │   ├── service/           # Business logic
+│   │   │   ├── configuration/
+│   │   │   │   ├── ApplicationInitConfig.java
+│   │   │   │   ├── CustomJwtDecoder.java
+│   │   │   │   ├── JwtAuthenticationEntryPoint.java
+│   │   │   │   └── SecurityConfig.java
+│   │   │   ├── constant/
+│   │   │   │   └── PredefinedRole.java
+│   │   │   ├── controller/
+│   │   │   │   ├── AddressController.java
+│   │   │   │   ├── AuthenticationController.java
+│   │   │   │   ├── OrderController.java
+│   │   │   │   ├── PermissionController.java
+│   │   │   │   ├── RoleController.java
+│   │   │   │   └── UserController.java
+│   │   │   ├── dto/
+│   │   │   │   ├── request/
+│   │   │   │   │   ├── AddressCreateRequest.java
+│   │   │   │   │   ├── AddressUpdateRequest.java
+│   │   │   │   │   ├── AuthenticationRequest.java
+│   │   │   │   │   ├── IntrospectRequest.java
+│   │   │   │   │   ├── LogoutRequest.java
+│   │   │   │   │   ├── OrderCreationRequest.java
+│   │   │   │   │   ├── OrderUpdateRequest.java
+│   │   │   │   │   ├── PermissionRequest.java
+│   │   │   │   │   ├── RoleRequest.java
+│   │   │   │   │   ├── UserCreationRequest.java
+│   │   │   │   │   └── UserUpdateRequest.java
+│   │   │   │   └── response/
+│   │   │   │       ├── AddressReponse.java
+│   │   │   │       ├── ApiResponse.java
+│   │   │   │       ├── AuthenticationResponse.java
+│   │   │   │       ├── IntrospectResponse.java
+│   │   │   │       ├── OrderResponse.java
+│   │   │   │       ├── PermissionResponse.java
+│   │   │   │       ├── RoleResponse.java
+│   │   │   │       └── UserResponse.java
+│   │   │   ├── entity/
+│   │   │   │   ├── Address.java
+│   │   │   │   ├── InvalidatedToken.java
+│   │   │   │   ├── Order.java
+│   │   │   │   ├── Permission.java
+│   │   │   │   ├── Role.java
+│   │   │   │   └── User.java
+│   │   │   ├── enums/
+│   │   │   │   └── OrderStatus.java
+│   │   │   ├── exception/
+│   │   │   │   ├── AppException.java
+│   │   │   │   ├── ErrorCode.java
+│   │   │   │   └── GlobalExceptionHandler.java
+│   │   │   ├── mapper/
+│   │   │   │   ├── AddressMapper.java
+│   │   │   │   ├── OrderMapper.java
+│   │   │   │   ├── PermissionMapper.java
+│   │   │   │   ├── RoleMapper.java
+│   │   │   │   └── UserMapper.java
+│   │   │   ├── repository/
+│   │   │   │   ├── AddressRepository.java
+│   │   │   │   ├── InvalidatedTokenRepository.java
+│   │   │   │   ├── OrderRepository.java
+│   │   │   │   ├── PermissionRepository.java
+│   │   │   │   ├── RoleRepository.java
+│   │   │   │   └── UserRepository.java
+│   │   │   ├── service/
+│   │   │   │   ├── AddressService.java
+│   │   │   │   ├── AuthenticationService.java
+│   │   │   │   ├── OrderService.java
+│   │   │   │   ├── PermissionService.java
+│   │   │   │   ├── RoleService.java
+│   │   │   │   └── UserService.java
 │   │   │   └── EcommerceServiceApplication.java
 │   │   └── resources/
 │   │       └── application.yaml
 │   └── test/
-├── target/                        # Compiled classes
-├── mvnw, mvnw.cmd                 # Maven wrapper
-└── pom.xml                        # Maven configuration
+├── target/
+├── mvnw
+├── mvnw.cmd
+└── pom.xml
 ```
 
 **Hình 3: Site-map API Endpoints**
