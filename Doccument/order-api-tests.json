@@ -1,0 +1,590 @@
+{
+  "order_api_tests": {
+    "description": "Test cases cho Order API - Quản lý đơn hàng",
+    "base_url": "http://localhost:8080",
+    "endpoints": [
+      {
+        "name": "Tạo đơn hàng - Create Order",
+        "method": "POST",
+        "url": "/orders",
+        "description": "API để tạo đơn hàng mới (chỉ cho phép tạo đơn hàng cho chính mình, trừ admin)",
+        "headers": {
+          "Authorization": "Bearer JWT_TOKEN_HERE",
+          "Content-Type": "application/json"
+        },
+        "test_cases": [
+          {
+            "case": "Tạo đơn hàng thành công",
+            "request_body": {
+              "userId": "user-id-123",
+              "addressId": "address-id-456",
+              "totalAmount": 1500000.0
+            },
+            "expected_response": {
+              "code": 200,
+              "result": {
+                "orderId": "generated-order-id",
+                "userId": "user-id-123",
+                "addressId": "address-id-456",
+                "totalAmount": 1500000.0,
+                "status": "PENDING",
+                "createdAt": "2024-01-01T10:00:00"
+              }
+            }
+          },
+          {
+            "case": "Tạo đơn hàng với số tiền lớn",
+            "request_body": {
+              "userId": "user-id-123",
+              "addressId": "address-id-456",
+              "totalAmount": 50000000.0
+            },
+            "expected_response": {
+              "code": 200,
+              "result": {
+                "orderId": "generated-order-id",
+                "userId": "user-id-123",
+                "addressId": "address-id-456",
+                "totalAmount": 50000000.0,
+                "status": "PENDING",
+                "createdAt": "2024-01-01T10:00:00"
+              }
+            }
+          },
+          {
+            "case": "Tạo đơn hàng với userId trống",
+            "request_body": {
+              "userId": "",
+              "addressId": "address-id-456",
+              "totalAmount": 1000000.0
+            },
+            "expected_response": {
+              "code": 1000,
+              "message": "Mã người dùng không được để trống"
+            }
+          },
+          {
+            "case": "Tạo đơn hàng với addressId trống",
+            "request_body": {
+              "userId": "user-id-123",
+              "addressId": "",
+              "totalAmount": 1000000.0
+            },
+            "expected_response": {
+              "code": 1000,
+              "message": "Mã địa chỉ không được để trống"
+            }
+          },
+          {
+            "case": "Tạo đơn hàng với totalAmount null",
+            "request_body": {
+              "userId": "user-id-123",
+              "addressId": "address-id-456",
+              "totalAmount": null
+            },
+            "expected_response": {
+              "code": 1000,
+              "message": "Tổng tiền không được để trống"
+            }
+          },
+          {
+            "case": "Tạo đơn hàng với userId không tồn tại",
+            "request_body": {
+              "userId": "non-existent-user-id",
+              "addressId": "address-id-456",
+              "totalAmount": 1000000.0
+            },
+            "expected_response": {
+              "code": 2402,
+              "message": "Không tìm thấy người dùng với mã người dùng này"
+            }
+          },
+          {
+            "case": "Tạo đơn hàng với addressId không tồn tại",
+            "request_body": {
+              "userId": "user-id-123",
+              "addressId": "non-existent-address-id",
+              "totalAmount": 1000000.0
+            },
+            "expected_response": {
+              "code": 2408,
+              "message": "Không tìm thấy địa chỉ"
+            }
+          },
+          {
+            "case": "User tạo đơn hàng cho người khác (không có quyền)",
+            "request_body": {
+              "userId": "other-user-id",
+              "addressId": "address-id-456",
+              "totalAmount": 1000000.0
+            },
+            "expected_response": {
+              "code": 2406,
+              "message": "Bạn không có quyền truy cập"
+            }
+          }
+        ]
+      },
+      {
+        "name": "Lấy tất cả đơn hàng - Get All Orders",
+        "method": "GET",
+        "url": "/orders",
+        "description": "API để lấy danh sách tất cả đơn hàng (chỉ admin và shop)",
+        "headers": {
+          "Authorization": "Bearer JWT_TOKEN_HERE",
+          "Content-Type": "application/json"
+        },
+        "test_cases": [
+          {
+            "case": "Admin/Shop lấy danh sách tất cả đơn hàng thành công",
+            "expected_response": {
+              "code": 200,
+              "result": [
+                {
+                  "orderId": "order-id-1",
+                  "userId": "user-id-1",
+                  "addressId": "address-id-1",
+                  "totalAmount": 1500000.0,
+                  "status": "PENDING",
+                  "createdAt": "2024-01-01T10:00:00"
+                },
+                {
+                  "orderId": "order-id-2",
+                  "userId": "user-id-2",
+                  "addressId": "address-id-2",
+                  "totalAmount": 2500000.0,
+                  "status": "PROCESSING",
+                  "createdAt": "2024-01-01T11:00:00"
+                },
+                {
+                  "orderId": "order-id-3",
+                  "userId": "user-id-3",
+                  "addressId": "address-id-3",
+                  "totalAmount": 800000.0,
+                  "status": "DELIVERED",
+                  "createdAt": "2024-01-01T12:00:00"
+                }
+              ]
+            }
+          },
+          {
+            "case": "User thường không có quyền xem tất cả đơn hàng",
+            "expected_response": {
+              "code": 2406,
+              "message": "Bạn không có quyền truy cập"
+            }
+          }
+        ]
+      },
+      {
+        "name": "Lấy đơn hàng theo ID - Get Order by ID",
+        "method": "GET",
+        "url": "/orders/{orderId}",
+        "description": "API để lấy thông tin đơn hàng theo ID (chỉ admin/shop hoặc chủ đơn hàng)",
+        "headers": {
+          "Authorization": "Bearer JWT_TOKEN_HERE",
+          "Content-Type": "application/json"
+        },
+        "test_cases": [
+          {
+            "case": "Lấy thông tin đơn hàng thành công",
+            "url": "/orders/order-id-123",
+            "expected_response": {
+              "code": 200,
+              "result": {
+                "orderId": "order-id-123",
+                "userId": "user-id-123",
+                "addressId": "address-id-456",
+                "totalAmount": 1500000.0,
+                "status": "PENDING",
+                "createdAt": "2024-01-01T10:00:00"
+              }
+            }
+          },
+          {
+            "case": "Lấy đơn hàng không tồn tại",
+            "url": "/orders/non-existent-order-id",
+            "expected_response": {
+              "code": 2409,
+              "message": "Không tìm thấy đơn hàng"
+            }
+          },
+          {
+            "case": "User không có quyền xem đơn hàng của người khác",
+            "url": "/orders/other-user-order-id",
+            "expected_response": {
+              "code": 2406,
+              "message": "Bạn không có quyền truy cập"
+            }
+          }
+        ]
+      },
+      {
+        "name": "Lấy đơn hàng của chính mình - Get My Orders",
+        "method": "GET",
+        "url": "/orders/myOrders",
+        "description": "API để lấy danh sách đơn hàng của người dùng hiện tại",
+        "headers": {
+          "Authorization": "Bearer JWT_TOKEN_HERE",
+          "Content-Type": "application/json"
+        },
+        "test_cases": [
+          {
+            "case": "User lấy danh sách đơn hàng của mình thành công",
+            "expected_response": {
+              "code": 200,
+              "result": [
+                {
+                  "orderId": "order-id-123",
+                  "userId": "current-user-id",
+                  "addressId": "address-id-456",
+                  "totalAmount": 1500000.0,
+                  "status": "PENDING",
+                  "createdAt": "2024-01-01T10:00:00"
+                },
+                {
+                  "orderId": "order-id-124",
+                  "userId": "current-user-id",
+                  "addressId": "address-id-789",
+                  "totalAmount": 2200000.0,
+                  "status": "DELIVERED",
+                  "createdAt": "2024-01-02T14:30:00"
+                }
+              ]
+            }
+          },
+          {
+            "case": "User chưa có đơn hàng nào",
+            "expected_response": {
+              "code": 200,
+              "result": []
+            }
+          },
+          {
+            "case": "Không có token xác thực",
+            "headers": {
+              "Content-Type": "application/json"
+            },
+            "expected_response": {
+              "code": 2407,
+              "message": "Bạn chưa đăng nhập"
+            }
+          }
+        ]
+      },
+      {
+        "name": "Cập nhật đơn hàng - Update Order",
+        "method": "PUT",
+        "url": "/orders/{orderId}",
+        "description": "API để cập nhật thông tin đơn hàng (chỉ admin và shop)",
+        "headers": {
+          "Authorization": "Bearer JWT_TOKEN_HERE",
+          "Content-Type": "application/json"
+        },
+        "test_cases": [
+          {
+            "case": "Cập nhật đơn hàng thành công",
+            "url": "/orders/order-id-123",
+            "request_body": {
+              "addressId": "new-address-id-789",
+              "totalAmount": 1800000.0,
+              "status": "PROCESSING"
+            },
+            "expected_response": {
+              "code": 200,
+              "result": {
+                "orderId": "order-id-123",
+                "userId": "user-id-123",
+                "addressId": "new-address-id-789",
+                "totalAmount": 1800000.0,
+                "status": "PROCESSING",
+                "createdAt": "2024-01-01T10:00:00"
+              }
+            }
+          },
+          {
+            "case": "Cập nhật chỉ trạng thái đơn hàng",
+            "url": "/orders/order-id-123",
+            "request_body": {
+              "status": "SHIPPED"
+            },
+            "expected_response": {
+              "code": 200,
+              "result": {
+                "orderId": "order-id-123",
+                "userId": "user-id-123",
+                "addressId": "address-id-456",
+                "totalAmount": 1500000.0,
+                "status": "SHIPPED",
+                "createdAt": "2024-01-01T10:00:00"
+              }
+            }
+          },
+          {
+            "case": "Cập nhật đơn hàng không tồn tại",
+            "url": "/orders/non-existent-order-id",
+            "request_body": {
+              "status": "PROCESSING"
+            },
+            "expected_response": {
+              "code": 2409,
+              "message": "Không tìm thấy đơn hàng"
+            }
+          },
+          {
+            "case": "User thường không có quyền cập nhật đơn hàng",
+            "url": "/orders/order-id-123",
+            "request_body": {
+              "status": "PROCESSING"
+            },
+            "expected_response": {
+              "code": 2406,
+              "message": "Bạn không có quyền truy cập"
+            }
+          }
+        ]
+      },
+      {
+        "name": "Xóa đơn hàng - Delete Order",
+        "method": "DELETE",
+        "url": "/orders/{orderId}",
+        "description": "API để xóa đơn hàng (chỉ admin)",
+        "headers": {
+          "Authorization": "Bearer JWT_TOKEN_HERE",
+          "Content-Type": "application/json"
+        },
+        "test_cases": [
+          {
+            "case": "Admin xóa đơn hàng thành công",
+            "url": "/orders/order-id-123",
+            "expected_response": {
+              "code": 200,
+              "result": "Đơn hàng đã được xóa thành công"
+            }
+          },
+          {
+            "case": "Xóa đơn hàng không tồn tại",
+            "url": "/orders/non-existent-order-id",
+            "expected_response": {
+              "code": 2409,
+              "message": "Không tìm thấy đơn hàng"
+            }
+          },
+          {
+            "case": "Shop không có quyền xóa đơn hàng",
+            "url": "/orders/order-id-123",
+            "expected_response": {
+              "code": 2406,
+              "message": "Bạn không có quyền truy cập"
+            }
+          },
+          {
+            "case": "User thường không có quyền xóa đơn hàng",
+            "url": "/orders/order-id-123",
+            "expected_response": {
+              "code": 2406,
+              "message": "Bạn không có quyền truy cập"
+            }
+          }
+        ]
+      },
+      {
+        "name": "Hủy đơn hàng - Cancel Order",
+        "method": "PUT",
+        "url": "/orders/{orderId}/cancel",
+        "description": "API để hủy đơn hàng (chỉ chủ đơn hàng hoặc admin)",
+        "headers": {
+          "Authorization": "Bearer JWT_TOKEN_HERE",
+          "Content-Type": "application/json"
+        },
+        "test_cases": [
+          {
+            "case": "Hủy đơn hàng PENDING thành công",
+            "url": "/orders/order-id-123/cancel",
+            "expected_response": {
+              "code": 200,
+              "result": {
+                "orderId": "order-id-123",
+                "userId": "user-id-123",
+                "addressId": "address-id-456",
+                "totalAmount": 1500000.0,
+                "status": "CANCELLED",
+                "createdAt": "2024-01-01T10:00:00"
+              }
+            }
+          },
+          {
+            "case": "Hủy đơn hàng PROCESSING thành công",
+            "url": "/orders/order-id-124/cancel",
+            "expected_response": {
+              "code": 200,
+              "result": {
+                "orderId": "order-id-124",
+                "userId": "user-id-123",
+                "addressId": "address-id-456",
+                "totalAmount": 2000000.0,
+                "status": "CANCELLED",
+                "createdAt": "2024-01-01T11:00:00"
+              }
+            }
+          },
+          {
+            "case": "Không thể hủy đơn hàng đã SHIPPED",
+            "url": "/orders/order-id-125/cancel",
+            "expected_response": {
+              "code": 2406,
+              "message": "Bạn không có quyền truy cập"
+            }
+          },
+          {
+            "case": "Không thể hủy đơn hàng đã DELIVERED",
+            "url": "/orders/order-id-126/cancel",
+            "expected_response": {
+              "code": 2406,
+              "message": "Bạn không có quyền truy cập"
+            }
+          },
+          {
+            "case": "Hủy đơn hàng không tồn tại",
+            "url": "/orders/non-existent-order-id/cancel",
+            "expected_response": {
+              "code": 2409,
+              "message": "Không tìm thấy đơn hàng"
+            }
+          },
+          {
+            "case": "User hủy đơn hàng của người khác (không có quyền)",
+            "url": "/orders/other-user-order-id/cancel",
+            "expected_response": {
+              "code": 2406,
+              "message": "Bạn không có quyền truy cập"
+            }
+          }
+        ]
+      },
+      {
+        "name": "Duyệt đơn hàng - Approve Order",
+        "method": "PUT",
+        "url": "/orders/{orderId}/approve",
+        "description": "API để duyệt đơn hàng (chỉ admin và shop)",
+        "headers": {
+          "Authorization": "Bearer JWT_TOKEN_HERE",
+          "Content-Type": "application/json"
+        },
+        "test_cases": [
+          {
+            "case": "Duyệt đơn hàng PENDING thành công",
+            "url": "/orders/order-id-123/approve",
+            "expected_response": {
+              "code": 200,
+              "result": {
+                "orderId": "order-id-123",
+                "userId": "user-id-123",
+                "addressId": "address-id-456",
+                "totalAmount": 1500000.0,
+                "status": "PROCESSING",
+                "createdAt": "2024-01-01T10:00:00"
+              }
+            }
+          },
+          {
+            "case": "Không thể duyệt đơn hàng đã PROCESSING",
+            "url": "/orders/order-id-124/approve",
+            "expected_response": {
+              "code": 2406,
+              "message": "Bạn không có quyền truy cập"
+            }
+          },
+          {
+            "case": "Không thể duyệt đơn hàng đã CANCELLED",
+            "url": "/orders/order-id-125/approve",
+            "expected_response": {
+              "code": 2406,
+              "message": "Bạn không có quyền truy cập"
+            }
+          },
+          {
+            "case": "Duyệt đơn hàng không tồn tại",
+            "url": "/orders/non-existent-order-id/approve",
+            "expected_response": {
+              "code": 2409,
+              "message": "Không tìm thấy đơn hàng"
+            }
+          },
+          {
+            "case": "User thường không có quyền duyệt đơn hàng",
+            "url": "/orders/order-id-123/approve",
+            "expected_response": {
+              "code": 2406,
+              "message": "Bạn không có quyền truy cập"
+            }
+          }
+        ]
+      }
+    ],
+    "order_status_flow": {
+      "description": "Luồng trạng thái đơn hàng trong hệ thống",
+      "statuses": [
+        {
+          "status": "PENDING",
+          "description": "Đơn hàng đang chờ xử lý",
+          "next_possible_statuses": ["PROCESSING", "CANCELLED"],
+          "actions_allowed": ["approve", "cancel", "update"]
+        },
+        {
+          "status": "PROCESSING",
+          "description": "Đơn hàng đang được xử lý",
+          "next_possible_statuses": ["SHIPPED", "CANCELLED"],
+          "actions_allowed": ["cancel", "update"]
+        },
+        {
+          "status": "SHIPPED",
+          "description": "Đơn hàng đã được giao cho đơn vị vận chuyển",
+          "next_possible_statuses": ["DELIVERED"],
+          "actions_allowed": ["update"]
+        },
+        {
+          "status": "DELIVERED",
+          "description": "Đơn hàng đã được giao thành công",
+          "next_possible_statuses": [],
+          "actions_allowed": []
+        },
+        {
+          "status": "CANCELLED",
+          "description": "Đơn hàng đã bị hủy",
+          "next_possible_statuses": [],
+          "actions_allowed": []
+        }
+      ]
+    },
+    "sample_orders": {
+      "description": "Dữ liệu mẫu cho việc test đơn hàng",
+      "orders": [
+        {
+          "userId": "user-id-123",
+          "addressId": "address-id-456",
+          "totalAmount": 1500000.0,
+          "description": "Đơn hàng điện tử"
+        },
+        {
+          "userId": "user-id-123",
+          "addressId": "address-id-789",
+          "totalAmount": 850000.0,
+          "description": "Đơn hàng thời trang"
+        },
+        {
+          "userId": "user-id-456",
+          "addressId": "address-id-123",
+          "totalAmount": 2200000.0,
+          "description": "Đơn hàng gia dụng"
+        },
+        {
+          "userId": "user-id-789",
+          "addressId": "address-id-789",
+          "totalAmount": 650000.0,
+          "description": "Đơn hàng sách"
+        }
+      ]
+    }
+  }
+}

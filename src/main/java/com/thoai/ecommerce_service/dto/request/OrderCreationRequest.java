@@ -17,7 +17,7 @@ import lombok.experimental.FieldDefaults;
 @Builder
 @FieldDefaults(level = lombok.AccessLevel.PRIVATE)
 public class OrderCreationRequest {
-    @NotBlank(message = "Mã người dùng không được để trống")
+    // userId có thể null, nếu null sẽ lấy từ người dùng đang đăng nhập
     String userId;
 
     @NotBlank(message = "Mã địa chỉ không được để trống")

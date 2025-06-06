@@ -1,15 +1,17 @@
 package com.thoai.ecommerce_service.controller;
 
+import java.util.List;
+
+import org.springframework.web.bind.annotation.*;
+
 import com.thoai.ecommerce_service.dto.request.RoleRequest;
 import com.thoai.ecommerce_service.dto.response.ApiResponse;
 import com.thoai.ecommerce_service.dto.response.RoleResponse;
 import com.thoai.ecommerce_service.service.RoleService;
+
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @RestController
 @RequestMapping("/roles")

@@ -8,7 +8,7 @@ import lombok.Getter;
 // Để định nghĩa các mã lỗi
 @Getter
 public enum ErrorCode {
-    UNCATCH_ERROR(2499, "Lỗi chưa xác định: ", HttpStatus.INTERNAL_SERVER_ERROR),
+    UNCATCH_ERROR(2499, "Lỗi chưa xác định.", HttpStatus.INTERNAL_SERVER_ERROR),
     USER_EXISTS(2401, "Tên đăng nhập đã tồn tại", HttpStatus.BAD_REQUEST),
     USER_NOT_FOUND(2402, "Không tìm thấy người dùng với mã người dùng này", HttpStatus.NOT_FOUND),
     USERNAME_NOT_FOUND(2403, "Không tìm thấy người dùng với tên đăng nhập này", HttpStatus.NOT_FOUND),
@@ -18,6 +18,7 @@ public enum ErrorCode {
     UNAUTHENTICATED(2407, "Bạn chưa đăng nhập", HttpStatus.UNAUTHORIZED),
     ADDRESS_NOT_FOUND(2408, "Không tìm thấy địa chỉ", HttpStatus.NOT_FOUND),
     ORDER_NOT_FOUND(2409, "Không tìm thấy đơn hàng", HttpStatus.NOT_FOUND),
+    ADMIN_NOT_FOUND(2410, "Không tìm thấy vai trò ADMIN trong cơ sở dữ liệu", HttpStatus.NOT_FOUND),
     ;
 
     private int code;

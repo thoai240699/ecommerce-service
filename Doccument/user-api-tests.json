@@ -1,0 +1,354 @@
+{
+  "user_api_tests": {
+    "description": "Test cases cho User API - Quản lý người dùng",
+    "base_url": "http://localhost:8080",
+    "endpoints": [
+      {
+        "name": "Tạo người dùng - Create User",
+        "method": "POST",
+        "url": "/users",
+        "description": "API để tạo tài khoản người dùng mới (public endpoint)",
+        "headers": {
+          "Content-Type": "application/json"
+        },
+        "test_cases": [
+          {
+            "case": "Tạo user thường thành công",
+            "request_body": {
+              "username": "user123",
+              "password": "password123",
+              "name": "Nguyễn Văn A",
+              "email": "user123@example.com",
+              "phone": "0912345678"
+            },
+            "expected_response": {
+              "code": 200,
+              "result": {
+                "userId": "generated-uuid",
+                "username": "user123",
+                "name": "Nguyễn Văn A",
+                "email": "user123@example.com",
+                "phone": "0912345678",
+                "roles": [
+                  {
+                    "name": "SHOP",
+                    "description": "Cửa hàng - Có thể quản lý sản phẩm, xử lý đơn hàng"
+                  }
+                ],
+                "createdAt": "2024-01-01T10:00:00"
+              }
+            }
+          },
+          {
+            "case": "Tạo user với admin role (cần quyền admin)",
+            "request_body": {
+              "username": "admin2",
+              "password": "password123",
+              "name": "Admin User",
+              "email": "admin2@example.com",
+              "phone": "0987654321",
+              "roles": ["ADMIN"]
+            },
+            "expected_response": {
+              "code": 200,
+              "result": {
+                "userId": "generated-uuid",
+                "username": "admin2",
+                "name": "Admin User",
+                "email": "admin2@example.com",
+                "phone": "0987654321",
+                "roles": [
+                  {
+                    "name": "ADMIN",
+                    "description": "Quản trị viên - Có toàn quyền quản lý hệ thống"
+                  }
+                ]
+              }
+            }
+          },
+          {
+            "case": "Tạo user với username đã tồn tại",
+            "request_body": {
+              "username": "admin",
+              "password": "password123",
+              "name": "Test User",
+              "email": "test@example.com",
+              "phone": "0123456789"
+            },
+            "expected_response": {
+              "code": 2401,
+              "message": "Tên đăng nhập đã tồn tại"
+            }
+          },
+          {
+            "case": "Tạo user với email đã tồn tại",
+            "request_body": {
+              "username": "newuser",
+              "password": "password123",
+              "name": "Test User",
+              "email": "existing@example.com",
+              "phone": "0123456789"
+            },
+            "expected_response": {
+              "code": 2405,
+              "message": "Email đã được sử dụng"
+            }
+          },
+          {
+            "case": "Tạo user với dữ liệu không hợp lệ - username quá ngắn",
+            "request_body": {
+              "username": "ab",
+              "password": "password123",
+              "name": "Test User",
+              "email": "test@example.com",
+              "phone": "0123456789"
+            },
+            "expected_response": {
+              "code": 1000,
+              "message": "Tên đăng nhập phải từ 3 đến 20 ký tự."
+            }
+          },
+          {
+            "case": "Tạo user với mật khẩu quá ngắn",
+            "request_body": {
+              "username": "testuser",
+              "password": "123",
+              "name": "Test User",
+              "email": "test@example.com",
+              "phone": "0123456789"
+            },
+            "expected_response": {
+              "code": 1000,
+              "message": "Mật khẩu phải chứa tối thiểu  8 ký tự."
+            }
+          },
+          {
+            "case": "Tạo user với email không hợp lệ",
+            "request_body": {
+              "username": "testuser",
+              "password": "password123",
+              "name": "Test User",
+              "email": "invalid-email",
+              "phone": "0123456789"
+            },
+            "expected_response": {
+              "code": 1000,
+              "message": "Email không hợp lệ."
+            }
+          },
+          {
+            "case": "Tạo user với số điện thoại không hợp lệ",
+            "request_body": {
+              "username": "testuser",
+              "password": "password123",
+              "name": "Test User",
+              "email": "test@example.com",
+              "phone": "123456"
+            },
+            "expected_response": {
+              "code": 1000,
+              "message": "Số điện thoại phải là số điện thoại viêt nam."
+            }
+          }
+        ]
+      },
+      {
+        "name": "Lấy danh sách người dùng - Get All Users",
+        "method": "GET",
+        "url": "/users",
+        "description": "API để lấy danh sách tất cả người dùng (chỉ admin)",
+        "headers": {
+          "Authorization": "Bearer JWT_TOKEN_HERE",
+          "Content-Type": "application/json"
+        },
+        "test_cases": [
+          {
+            "case": "Admin lấy danh sách users",
+            "expected_response": {
+              "code": 200,
+              "result": [
+                {
+                  "userId": "user-id-1",
+                  "username": "admin",
+                  "name": "Administrator",
+                  "email": "admin@example.com",
+                  "phone": "0900000000",
+                  "roles": [
+                    {
+                      "name": "ADMIN",
+                      "description": "Quản trị viên"
+                    }
+                  ],
+                  "createdAt": "2024-01-01T10:00:00"
+                }
+              ]
+            }
+          },
+          {
+            "case": "User thường không có quyền truy cập",
+            "expected_response": {
+              "code": 2406,
+              "message": "Bạn không có quyền truy cập"
+            }
+          }
+        ]
+      },
+      {
+        "name": "Lấy thông tin người dùng theo ID - Get User by ID",
+        "method": "GET",
+        "url": "/users/{userId}",
+        "description": "API để lấy thông tin người dùng theo ID (chỉ admin hoặc chính user đó)",
+        "headers": {
+          "Authorization": "Bearer JWT_TOKEN_HERE",
+          "Content-Type": "application/json"
+        },
+        "test_cases": [
+          {
+            "case": "Lấy thông tin user thành công",
+            "url": "/users/user-id-123",
+            "expected_response": {
+              "code": 200,
+              "result": {
+                "userId": "user-id-123",
+                "username": "user123",
+                "name": "Nguyễn Văn A",
+                "email": "user123@example.com",
+                "phone": "0912345678",
+                "roles": [
+                  {
+                    "name": "USER",
+                    "description": "Người dùng"
+                  }
+                ],
+                "createdAt": "2024-01-01T10:00:00"
+              }
+            }
+          },
+          {
+            "case": "User không tồn tại",
+            "url": "/users/non-existent-id",
+            "expected_response": {
+              "code": 2402,
+              "message": "Không tìm thấy người dùng với mã người dùng này"
+            }
+          }
+        ]
+      },
+      {
+        "name": "Lấy thông tin cá nhân - Get My Information",
+        "method": "GET",
+        "url": "/users/myInfo",
+        "description": "API để lấy thông tin cá nhân của người dùng hiện tại",
+        "headers": {
+          "Authorization": "Bearer JWT_TOKEN_HERE",
+          "Content-Type": "application/json"
+        },
+        "test_cases": [
+          {
+            "case": "Lấy thông tin cá nhân thành công",
+            "expected_response": {
+              "code": 200,
+              "result": {
+                "userId": "current-user-id",
+                "username": "currentuser",
+                "name": "Current User",
+                "email": "current@example.com",
+                "phone": "0912345678",
+                "roles": [
+                  {
+                    "name": "USER",
+                    "description": "Người dùng"
+                  }
+                ],
+                "createdAt": "2024-01-01T10:00:00"
+              }
+            }
+          }
+        ]
+      },
+      {
+        "name": "Cập nhật người dùng - Update User",
+        "method": "PUT",
+        "url": "/users/{userId}",
+        "description": "API để cập nhật thông tin người dùng (chỉ admin hoặc chính user đó)",
+        "headers": {
+          "Authorization": "Bearer JWT_TOKEN_HERE",
+          "Content-Type": "application/json"
+        },
+        "test_cases": [
+          {
+            "case": "Cập nhật thông tin thành công",
+            "url": "/users/user-id-123",
+            "request_body": {
+              "name": "Nguyễn Văn B",
+              "email": "newuser@example.com",
+              "phone": "0987654321",
+              "password": "newpassword123"
+            },
+            "expected_response": {
+              "userId": "user-id-123",
+              "username": "user123",
+              "name": "Nguyễn Văn B",
+              "email": "newuser@example.com",
+              "phone": "0987654321",
+              "roles": [
+                {
+                  "name": "USER",
+                  "description": "Người dùng"
+                }
+              ],
+              "createdAt": "2024-01-01T10:00:00"
+            }
+          },
+          {
+            "case": "Cập nhật với email không hợp lệ",
+            "url": "/users/user-id-123",
+            "request_body": {
+              "email": "invalid-email"
+            },
+            "expected_response": {
+              "code": 1000,
+              "message": "Email không hợp lệ."
+            }
+          }
+        ]
+      },
+      {
+        "name": "Xóa người dùng - Delete User",
+        "method": "DELETE",
+        "url": "/users/{userId}",
+        "description": "API để xóa người dùng (chỉ admin)",
+        "headers": {
+          "Authorization": "Bearer JWT_TOKEN_HERE",
+          "Content-Type": "application/json"
+        },
+        "test_cases": [
+          {
+            "case": "Xóa user thành công",
+            "url": "/users/user-id-123",
+            "expected_response": {
+              "code": 200,
+              "result": "Người dùng đã được xóa thành công"
+            }
+          },
+          {
+            "case": "Xóa user không tồn tại",
+            "url": "/users/non-existent-id",
+            "expected_response": {
+              "code": 2402,
+              "message": "Không tìm thấy người dùng với mã người dùng này"
+            }
+          },
+          {
+            "case": "User thường không có quyền xóa",
+            "url": "/users/user-id-123",
+            "expected_response": {
+              "code": 2406,
+              "message": "Bạn không có quyền truy cập"
+            }
+          }
+        ]
+      }
+    ]
+  }
+}

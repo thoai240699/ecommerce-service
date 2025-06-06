@@ -1,0 +1,404 @@
+{
+  "address_api_tests": {
+    "description": "Test cases cho Address API - Quản lý địa chỉ",
+    "base_url": "http://localhost:8080",
+    "endpoints": [
+      {
+        "name": "Tạo địa chỉ - Create Address",
+        "method": "POST",
+        "url": "/addresses",
+        "description": "API để tạo địa chỉ mới (chỉ cho phép tạo địa chỉ cho chính mình, trừ admin)",
+        "headers": {
+          "Authorization": "Bearer JWT_TOKEN_HERE",
+          "Content-Type": "application/json"
+        },
+        "test_cases": [
+          {
+            "case": "Tạo địa chỉ thành công",
+            "request_body": {
+              "userId": "user-id-123",
+              "streetAddress": "123 Đường Nguyễn Văn Linh",
+              "ward": "Phường Tân Phong",
+              "district": "Quận 7",
+              "city": "TP. Hồ Chí Minh"
+            },
+            "expected_response": {
+              "code": 200,
+              "result": {
+                "userId": "user-id-123",
+                "streetAddress": "123 Đường Nguyễn Văn Linh",
+                "ward": "Phường Tân Phong",
+                "district": "Quận 7",
+                "city": "TP. Hồ Chí Minh"
+              }
+            }
+          },
+          {
+            "case": "Tạo địa chỉ với thông tin tối thiểu",
+            "request_body": {
+              "userId": "user-id-123",
+              "streetAddress": "456 Đường Lê Văn Việt",
+              "city": "TP. Hồ Chí Minh"
+            },
+            "expected_response": {
+              "code": 200,
+              "result": {
+                "userId": "user-id-123",
+                "streetAddress": "456 Đường Lê Văn Việt",
+                "ward": null,
+                "district": null,
+                "city": "TP. Hồ Chí Minh"
+              }
+            }
+          },
+          {
+            "case": "Tạo địa chỉ với userId trống",
+            "request_body": {
+              "userId": "",
+              "streetAddress": "123 Đường ABC",
+              "city": "Hà Nội"
+            },
+            "expected_response": {
+              "code": 1000,
+              "message": "Mã người dùng không được để trống"
+            }
+          },
+          {
+            "case": "Tạo địa chỉ với userId không tồn tại",
+            "request_body": {
+              "userId": "non-existent-user-id",
+              "streetAddress": "123 Đường ABC",
+              "city": "Hà Nội"
+            },
+            "expected_response": {
+              "code": 2402,
+              "message": "Không tìm thấy người dùng với mã người dùng này"
+            }
+          },
+          {
+            "case": "User tạo địa chỉ cho người khác (không có quyền)",
+            "request_body": {
+              "userId": "other-user-id",
+              "streetAddress": "123 Đường ABC",
+              "city": "Hà Nội"
+            },
+            "expected_response": {
+              "code": 2406,
+              "message": "Bạn không có quyền truy cập"
+            }
+          }
+        ]
+      },
+      {
+        "name": "Lấy tất cả địa chỉ - Get All Addresses",
+        "method": "GET",
+        "url": "/addresses",
+        "description": "API để lấy danh sách tất cả địa chỉ (chỉ admin)",
+        "headers": {
+          "Authorization": "Bearer JWT_TOKEN_HERE",
+          "Content-Type": "application/json"
+        },
+        "test_cases": [
+          {
+            "case": "Admin lấy danh sách tất cả địa chỉ thành công",
+            "expected_response": {
+              "code": 200,
+              "result": [
+                {
+                  "userId": "user-id-1",
+                  "streetAddress": "123 Đường Nguyễn Văn Linh",
+                  "ward": "Phường Tân Phong",
+                  "district": "Quận 7",
+                  "city": "TP. Hồ Chí Minh"
+                },
+                {
+                  "userId": "user-id-2",
+                  "streetAddress": "456 Đường Lê Văn Việt",
+                  "ward": "Phường Tăng Nhơn Phú A",
+                  "district": "Quận 9",
+                  "city": "TP. Hồ Chí Minh"
+                },
+                {
+                  "userId": "user-id-3",
+                  "streetAddress": "789 Đường Võ Văn Ngân",
+                  "ward": "Phường Linh Chiểu",
+                  "district": "Thủ Đức",
+                  "city": "TP. Hồ Chí Minh"
+                }
+              ]
+            }
+          },
+          {
+            "case": "User thường không có quyền xem tất cả địa chỉ",
+            "expected_response": {
+              "code": 2406,
+              "message": "Bạn không có quyền truy cập"
+            }
+          }
+        ]
+      },
+      {
+        "name": "Lấy địa chỉ theo userId - Get Addresses by User ID",
+        "method": "GET",
+        "url": "/addresses/{userId}",
+        "description": "API để lấy danh sách địa chỉ theo userId (chỉ admin)",
+        "headers": {
+          "Authorization": "Bearer JWT_TOKEN_HERE",
+          "Content-Type": "application/json"
+        },
+        "test_cases": [
+          {
+            "case": "Admin lấy địa chỉ theo userId thành công",
+            "url": "/addresses/user-id-123",
+            "expected_response": {
+              "code": 200,
+              "result": [
+                {
+                  "userId": "user-id-123",
+                  "streetAddress": "123 Đường Nguyễn Văn Linh",
+                  "ward": "Phường Tân Phong",
+                  "district": "Quận 7",
+                  "city": "TP. Hồ Chí Minh"
+                },
+                {
+                  "userId": "user-id-123",
+                  "streetAddress": "456 Đường Lê Văn Việt",
+                  "ward": "Phường Tăng Nhơn Phú A",
+                  "district": "Quận 9",
+                  "city": "TP. Hồ Chí Minh"
+                }
+              ]
+            }
+          },
+          {
+            "case": "Admin lấy địa chỉ của user không tồn tại",
+            "url": "/addresses/non-existent-user",
+            "expected_response": {
+              "code": 200,
+              "result": []
+            }
+          },
+          {
+            "case": "User thường không có quyền xem địa chỉ của người khác",
+            "url": "/addresses/other-user-id",
+            "expected_response": {
+              "code": 2406,
+              "message": "Bạn không có quyền truy cập"
+            }
+          }
+        ]
+      },
+      {
+        "name": "Lấy địa chỉ của chính mình - Get My Addresses",
+        "method": "GET",
+        "url": "/addresses/myAddresses",
+        "description": "API để lấy danh sách địa chỉ của người dùng hiện tại",
+        "headers": {
+          "Authorization": "Bearer JWT_TOKEN_HERE",
+          "Content-Type": "application/json"
+        },
+        "test_cases": [
+          {
+            "case": "User lấy danh sách địa chỉ của mình thành công",
+            "expected_response": {
+              "code": 200,
+              "result": [
+                {
+                  "userId": "current-user-id",
+                  "streetAddress": "123 Đường Nguyễn Văn Linh",
+                  "ward": "Phường Tân Phong",
+                  "district": "Quận 7",
+                  "city": "TP. Hồ Chí Minh"
+                },
+                {
+                  "userId": "current-user-id",
+                  "streetAddress": "Nhà riêng - 789 Đường Võ Văn Ngân",
+                  "ward": "Phường Linh Chiểu",
+                  "district": "Thủ Đức",
+                  "city": "TP. Hồ Chí Minh"
+                }
+              ]
+            }
+          },
+          {
+            "case": "User chưa có địa chỉ nào",
+            "expected_response": {
+              "code": 200,
+              "result": []
+            }
+          },
+          {
+            "case": "Không có token xác thực",
+            "headers": {
+              "Content-Type": "application/json"
+            },
+            "expected_response": {
+              "code": 2407,
+              "message": "Bạn chưa đăng nhập"
+            }
+          }
+        ]
+      },
+      {
+        "name": "Cập nhật địa chỉ - Update Address",
+        "method": "PUT",
+        "url": "/addresses/{addressId}",
+        "description": "API để cập nhật thông tin địa chỉ (chỉ chủ địa chỉ hoặc admin)",
+        "headers": {
+          "Authorization": "Bearer JWT_TOKEN_HERE",
+          "Content-Type": "application/json"
+        },
+        "test_cases": [
+          {
+            "case": "Cập nhật địa chỉ thành công",
+            "url": "/addresses/address-id-123",
+            "request_body": {
+              "streetAddress": "123/1 Đường Nguyễn Văn Linh (Cập nhật)",
+              "ward": "Phường Tân Phú",
+              "district": "Quận 7",
+              "city": "TP. Hồ Chí Minh"
+            },
+            "expected_response": {
+              "code": 200,
+              "result": {
+                "userId": "user-id-123",
+                "streetAddress": "123/1 Đường Nguyễn Văn Linh (Cập nhật)",
+                "ward": "Phường Tân Phú",
+                "district": "Quận 7",
+                "city": "TP. Hồ Chí Minh"
+              }
+            }
+          },
+          {
+            "case": "Cập nhật một phần thông tin địa chỉ",
+            "url": "/addresses/address-id-123",
+            "request_body": {
+              "streetAddress": "456 Đường Lê Văn Việt (Cập nhật)",
+              "city": "TP. Hồ Chí Minh"
+            },
+            "expected_response": {
+              "code": 200,
+              "result": {
+                "userId": "user-id-123",
+                "streetAddress": "456 Đường Lê Văn Việt (Cập nhật)",
+                "ward": "Phường Tân Phú",
+                "district": "Quận 7",
+                "city": "TP. Hồ Chí Minh"
+              }
+            }
+          },
+          {
+            "case": "Cập nhật địa chỉ không tồn tại",
+            "url": "/addresses/non-existent-address-id",
+            "request_body": {
+              "streetAddress": "Updated address"
+            },
+            "expected_response": {
+              "code": 2408,
+              "message": "Không tìm thấy địa chỉ"
+            }
+          },
+          {
+            "case": "User cập nhật địa chỉ của người khác (không có quyền)",
+            "url": "/addresses/other-user-address-id",
+            "request_body": {
+              "streetAddress": "Unauthorized update"
+            },
+            "expected_response": {
+              "code": 2406,
+              "message": "Bạn không có quyền truy cập"
+            }
+          }
+        ]
+      },
+      {
+        "name": "Xóa địa chỉ - Delete Address",
+        "method": "DELETE",
+        "url": "/addresses/{addressId}",
+        "description": "API để xóa địa chỉ (chỉ chủ địa chỉ hoặc admin)",
+        "headers": {
+          "Authorization": "Bearer JWT_TOKEN_HERE",
+          "Content-Type": "application/json"
+        },
+        "test_cases": [
+          {
+            "case": "Xóa địa chỉ thành công",
+            "url": "/addresses/address-id-123",
+            "expected_response": {
+              "code": 200,
+              "result": "Địa chỉ đã được xóa thành công"
+            }
+          },
+          {
+            "case": "Xóa địa chỉ không tồn tại",
+            "url": "/addresses/non-existent-address-id",
+            "expected_response": {
+              "code": 2408,
+              "message": "Không tìm thấy địa chỉ"
+            }
+          },
+          {
+            "case": "User xóa địa chỉ của người khác (không có quyền)",
+            "url": "/addresses/other-user-address-id",
+            "expected_response": {
+              "code": 2406,
+              "message": "Bạn không có quyền truy cập"
+            }
+          },
+          {
+            "case": "Không có token xác thực",
+            "url": "/addresses/address-id-123",
+            "headers": {
+              "Content-Type": "application/json"
+            },
+            "expected_response": {
+              "code": 2407,
+              "message": "Bạn chưa đăng nhập"
+            }
+          }
+        ]
+      }
+    ],
+    "sample_addresses": {
+      "description": "Dữ liệu mẫu cho việc test địa chỉ Việt Nam",
+      "addresses": [
+        {
+          "streetAddress": "123 Đường Nguyễn Văn Linh",
+          "ward": "Phường Tân Phong",
+          "district": "Quận 7",
+          "city": "TP. Hồ Chí Minh"
+        },
+        {
+          "streetAddress": "456 Đường Lê Văn Việt",
+          "ward": "Phường Tăng Nhơn Phú A",
+          "district": "Quận 9",
+          "city": "TP. Hồ Chí Minh"
+        },
+        {
+          "streetAddress": "789 Đường Võ Văn Ngân",
+          "ward": "Phường Linh Chiểu",
+          "district": "Thủ Đức",
+          "city": "TP. Hồ Chí Minh"
+        },
+        {
+          "streetAddress": "101 Đường Hoàng Quốc Việt",
+          "ward": "Phường Nghĩa Đô",
+          "district": "Quận Cầu Giấy",
+          "city": "Hà Nội"
+        },
+        {
+          "streetAddress": "202 Đường Nguyễn Trãi",
+          "ward": "Phường Thanh Xuân Trung",
+          "district": "Quận Thanh Xuân",
+          "city": "Hà Nội"
+        },
+        {
+          "streetAddress": "303 Đường Trần Duy Hưng",
+          "ward": "Phường Trung Hòa",
+          "district": "Quận Cầu Giấy",
+          "city": "Hà Nội"
+        }
+      ]
+    }
+  }
+}

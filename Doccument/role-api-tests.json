@@ -1,0 +1,443 @@
+{
+  "role_api_tests": {
+    "description": "Test cases cho Role API - Quản lý vai trò",
+    "base_url": "http://localhost:8080",
+    "note": "Tất cả các API này yêu cầu quyền admin và JWT token hợp lệ",
+    "endpoints": [
+      {
+        "name": "Tạo vai trò - Create Role",
+        "method": "POST",
+        "url": "/roles",
+        "description": "API để tạo vai trò mới (chỉ admin)",
+        "headers": {
+          "Authorization": "Bearer JWT_TOKEN_HERE",
+          "Content-Type": "application/json"
+        },
+        "test_cases": [
+          {
+            "case": "Tạo vai trò USER thành công",
+            "request_body": {
+              "name": "USER",
+              "description": "Người dùng - Có thể mua hàng, quản lý đơn hàng và thông tin cá nhân",
+              "permissions": [
+                "USER_READ",
+                "USER_UPDATE",
+                "ADDRESS_CREATE",
+                "ADDRESS_READ",
+                "ADDRESS_UPDATE",
+                "ADDRESS_DELETE",
+                "ORDER_CREATE",
+                "ORDER_READ",
+                "ORDER_CANCEL"
+              ]
+            },
+            "expected_response": {
+              "code": 200,
+              "result": {
+                "name": "USER",
+                "description": "Người dùng - Có thể mua hàng, quản lý đơn hàng và thông tin cá nhân",
+                "permissions": [
+                  {
+                    "name": "USER_READ",
+                    "description": "Quyền đọc thông tin người dùng"
+                  },
+                  {
+                    "name": "USER_UPDATE",
+                    "description": "Quyền cập nhật thông tin người dùng"
+                  },
+                  {
+                    "name": "ADDRESS_CREATE",
+                    "description": "Quyền tạo địa chỉ mới"
+                  },
+                  {
+                    "name": "ADDRESS_READ",
+                    "description": "Quyền xem địa chỉ của chính mình"
+                  },
+                  {
+                    "name": "ADDRESS_UPDATE",
+                    "description": "Quyền cập nhật địa chỉ"
+                  },
+                  {
+                    "name": "ADDRESS_DELETE",
+                    "description": "Quyền xóa địa chỉ"
+                  },
+                  {
+                    "name": "ORDER_CREATE",
+                    "description": "Quyền tạo đơn hàng mới"
+                  },
+                  {
+                    "name": "ORDER_READ",
+                    "description": "Quyền xem đơn hàng của chính mình"
+                  },
+                  {
+                    "name": "ORDER_CANCEL",
+                    "description": "Quyền hủy đơn hàng"
+                  }
+                ]
+              }
+            }
+          },
+          {
+            "case": "Tạo vai trò SHOP thành công",
+            "request_body": {
+              "name": "SHOP",
+              "description": "Cửa hàng - Có thể quản lý sản phẩm, xử lý đơn hàng",
+              "permissions": [
+                "USER_READ",
+                "USER_UPDATE",
+                "ADDRESS_CREATE",
+                "ADDRESS_READ",
+                "ADDRESS_UPDATE",
+                "ADDRESS_DELETE",
+                "ORDER_CREATE",
+                "ORDER_READ",
+                "ORDER_READ_ALL",
+                "ORDER_UPDATE",
+                "ORDER_CANCEL",
+                "ORDER_APPROVE"
+              ]
+            },
+            "expected_response": {
+              "code": 200,
+              "result": {
+                "name": "SHOP",
+                "description": "Cửa hàng - Có thể quản lý sản phẩm, xử lý đơn hàng",
+                "permissions": [
+                  {
+                    "name": "USER_READ",
+                    "description": "Quyền đọc thông tin người dùng"
+                  },
+                  {
+                    "name": "USER_UPDATE",
+                    "description": "Quyền cập nhật thông tin người dùng"
+                  },
+                  {
+                    "name": "ORDER_READ_ALL",
+                    "description": "Quyền xem tất cả đơn hàng"
+                  },
+                  {
+                    "name": "ORDER_UPDATE",
+                    "description": "Quyền cập nhật đơn hàng"
+                  },
+                  {
+                    "name": "ORDER_APPROVE",
+                    "description": "Quyền duyệt đơn hàng"
+                  }
+                ]
+              }
+            }
+          },
+          {
+            "case": "Tạo vai trò ADMIN thành công",
+            "request_body": {
+              "name": "ADMIN",
+              "description": "Quản trị viên - Có toàn quyền quản lý hệ thống",
+              "permissions": [
+                "USER_READ",
+                "USER_CREATE",
+                "USER_UPDATE",
+                "USER_DELETE",
+                "USER_READ_ALL",
+                "ROLE_CREATE",
+                "ROLE_READ",
+                "ROLE_UPDATE",
+                "ROLE_DELETE",
+                "PERMISSION_CREATE",
+                "PERMISSION_READ",
+                "PERMISSION_DELETE",
+                "ADDRESS_CREATE",
+                "ADDRESS_READ",
+                "ADDRESS_READ_ALL",
+                "ADDRESS_UPDATE",
+                "ADDRESS_DELETE",
+                "ORDER_CREATE",
+                "ORDER_READ",
+                "ORDER_READ_ALL",
+                "ORDER_UPDATE",
+                "ORDER_DELETE",
+                "ORDER_CANCEL",
+                "ORDER_APPROVE",
+                "SYSTEM_ADMIN"
+              ]
+            },
+            "expected_response": {
+              "code": 200,
+              "result": {
+                "name": "ADMIN",
+                "description": "Quản trị viên - Có toàn quyền quản lý hệ thống",
+                "permissions": [
+                  {
+                    "name": "SYSTEM_ADMIN",
+                    "description": "Quyền quản trị toàn hệ thống"
+                  }
+                ]
+              }
+            }
+          },
+          {
+            "case": "Tạo vai trò với permissions không tồn tại",
+            "request_body": {
+              "name": "TEST_ROLE",
+              "description": "Test role",
+              "permissions": ["NON_EXISTENT_PERMISSION"]
+            },
+            "expected_response": {
+              "code": 200,
+              "result": {
+                "name": "TEST_ROLE",
+                "description": "Test role",
+                "permissions": []
+              }
+            }
+          },
+          {
+            "case": "User thường không có quyền tạo role",
+            "request_body": {
+              "name": "UNAUTHORIZED_ROLE",
+              "description": "Unauthorized role"
+            },
+            "expected_response": {
+              "code": 2406,
+              "message": "Bạn không có quyền truy cập"
+            }
+          }
+        ]
+      },
+      {
+        "name": "Lấy danh sách vai trò - Get All Roles",
+        "method": "GET",
+        "url": "/roles",
+        "description": "API để lấy danh sách tất cả vai trò (chỉ admin)",
+        "headers": {
+          "Authorization": "Bearer JWT_TOKEN_HERE",
+          "Content-Type": "application/json"
+        },
+        "test_cases": [
+          {
+            "case": "Admin lấy danh sách roles thành công",
+            "expected_response": {
+              "code": 200,
+              "result": [
+                {
+                  "name": "USER",
+                  "description": "Người dùng - Có thể mua hàng, quản lý đơn hàng và thông tin cá nhân",
+                  "permissions": [
+                    {
+                      "name": "USER_READ",
+                      "description": "Quyền đọc thông tin người dùng"
+                    },
+                    {
+                      "name": "ADDRESS_CREATE",
+                      "description": "Quyền tạo địa chỉ mới"
+                    },
+                    {
+                      "name": "ORDER_CREATE",
+                      "description": "Quyền tạo đơn hàng mới"
+                    }
+                  ]
+                },
+                {
+                  "name": "SHOP",
+                  "description": "Cửa hàng - Có thể quản lý sản phẩm, xử lý đơn hàng",
+                  "permissions": [
+                    {
+                      "name": "ORDER_READ_ALL",
+                      "description": "Quyền xem tất cả đơn hàng"
+                    },
+                    {
+                      "name": "ORDER_APPROVE",
+                      "description": "Quyền duyệt đơn hàng"
+                    }
+                  ]
+                },
+                {
+                  "name": "ADMIN",
+                  "description": "Quản trị viên - Có toàn quyền quản lý hệ thống",
+                  "permissions": [
+                    {
+                      "name": "SYSTEM_ADMIN",
+                      "description": "Quyền quản trị toàn hệ thống"
+                    },
+                    {
+                      "name": "USER_DELETE",
+                      "description": "Quyền xóa người dùng"
+                    },
+                    {
+                      "name": "ROLE_CREATE",
+                      "description": "Quyền tạo vai trò mới"
+                    }
+                  ]
+                }
+              ]
+            }
+          },
+          {
+            "case": "User thường không có quyền xem roles",
+            "expected_response": {
+              "code": 2406,
+              "message": "Bạn không có quyền truy cập"
+            }
+          },
+          {
+            "case": "Không có token xác thực",
+            "headers": {
+              "Content-Type": "application/json"
+            },
+            "expected_response": {
+              "code": 2407,
+              "message": "Bạn chưa đăng nhập"
+            }
+          }
+        ]
+      },
+      {
+        "name": "Cập nhật vai trò - Update Role",
+        "method": "PUT",
+        "url": "/roles/{roleName}",
+        "description": "API để cập nhật thông tin vai trò (chỉ admin)",
+        "headers": {
+          "Authorization": "Bearer JWT_TOKEN_HERE",
+          "Content-Type": "application/json"
+        },
+        "test_cases": [
+          {
+            "case": "Cập nhật role USER thành công",
+            "url": "/roles/USER",
+            "request_body": {
+              "description": "Người dùng cuối - Có thể mua hàng và quản lý thông tin cá nhân",
+              "permissions": [
+                "USER_READ",
+                "USER_UPDATE",
+                "ADDRESS_CREATE",
+                "ADDRESS_READ",
+                "ORDER_CREATE",
+                "ORDER_READ"
+              ]
+            },
+            "expected_response": {
+              "code": 200,
+              "result": {
+                "name": "USER",
+                "description": "Người dùng cuối - Có thể mua hàng và quản lý thông tin cá nhân",
+                "permissions": [
+                  {
+                    "name": "USER_READ",
+                    "description": "Quyền đọc thông tin người dùng"
+                  },
+                  {
+                    "name": "USER_UPDATE",
+                    "description": "Quyền cập nhật thông tin người dùng"
+                  },
+                  {
+                    "name": "ADDRESS_CREATE",
+                    "description": "Quyền tạo địa chỉ mới"
+                  },
+                  {
+                    "name": "ADDRESS_READ",
+                    "description": "Quyền xem địa chỉ của chính mình"
+                  },
+                  {
+                    "name": "ORDER_CREATE",
+                    "description": "Quyền tạo đơn hàng mới"
+                  },
+                  {
+                    "name": "ORDER_READ",
+                    "description": "Quyền xem đơn hàng của chính mình"
+                  }
+                ]
+              }
+            }
+          },
+          {
+            "case": "Cập nhật role không tồn tại",
+            "url": "/roles/NON_EXISTENT_ROLE",
+            "request_body": {
+              "description": "Updated description",
+              "permissions": ["USER_READ"]
+            },
+            "expected_response": {
+              "code": 2499,
+              "message": "Lỗi chưa xác định: "
+            }
+          },
+          {
+            "case": "User thường không có quyền cập nhật role",
+            "url": "/roles/USER",
+            "request_body": {
+              "description": "Unauthorized update"
+            },
+            "expected_response": {
+              "code": 2406,
+              "message": "Bạn không có quyền truy cập"
+            }
+          }
+        ]
+      },
+      {
+        "name": "Xóa vai trò - Delete Role",
+        "method": "DELETE",
+        "url": "/roles/{role}",
+        "description": "API để xóa vai trò (chỉ admin)",
+        "headers": {
+          "Authorization": "Bearer JWT_TOKEN_HERE",
+          "Content-Type": "application/json"
+        },
+        "test_cases": [
+          {
+            "case": "Xóa role thành công",
+            "url": "/roles/TEMP_ROLE",
+            "expected_response": {
+              "code": 200
+            }
+          },
+          {
+            "case": "Xóa role không tồn tại",
+            "url": "/roles/NON_EXISTENT_ROLE",
+            "expected_response": {
+              "code": 200
+            }
+          },
+          {
+            "case": "User thường không có quyền xóa role",
+            "url": "/roles/USER",
+            "expected_response": {
+              "code": 2406,
+              "message": "Bạn không có quyền truy cập"
+            }
+          },
+          {
+            "case": "Không có token xác thực",
+            "url": "/roles/USER",
+            "headers": {
+              "Content-Type": "application/json"
+            },
+            "expected_response": {
+              "code": 2407,
+              "message": "Bạn chưa đăng nhập"
+            }
+          }
+        ]
+      }
+    ],
+    "predefined_roles": {
+      "description": "Danh sách các vai trò được định nghĩa sẵn trong hệ thống",
+      "roles": [
+        {
+          "name": "USER",
+          "description": "Người dùng - Có thể mua hàng, quản lý đơn hàng và thông tin cá nhân",
+          "target_audience": "Khách hàng cuối sử dụng hệ thống để mua sắm"
+        },
+        {
+          "name": "SHOP",
+          "description": "Cửa hàng - Có thể quản lý sản phẩm, xử lý đơn hàng",
+          "target_audience": "Người bán hàng, quản lý cửa hàng"
+        },
+        {
+          "name": "ADMIN",
+          "description": "Quản trị viên - Có toàn quyền quản lý hệ thống",
+          "target_audience": "Quản trị viên hệ thống"
+        }
+      ]
+    }
+  }
+}

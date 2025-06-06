@@ -1,18 +1,20 @@
 package com.thoai.ecommerce_service.service;
 
+import java.util.HashSet;
+import java.util.List;
+
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.stereotype.Service;
+
 import com.thoai.ecommerce_service.dto.request.RoleRequest;
 import com.thoai.ecommerce_service.dto.response.RoleResponse;
 import com.thoai.ecommerce_service.mapper.RoleMapper;
 import com.thoai.ecommerce_service.repository.PermissionRepository;
 import com.thoai.ecommerce_service.repository.RoleRepository;
+
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.stereotype.Service;
-
-import java.util.HashSet;
-import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -54,8 +56,7 @@ public class RoleService {
     @PreAuthorize("hasAuthority('ROLE_UPDATE')")
     public RoleResponse updateRole(String roleName, RoleRequest request) {
         log.info("Updating role: {}", roleName);
-        var role = roleRepository.findById(roleName)
-                .orElseThrow(() -> new RuntimeException("Role not found"));
+        var role = roleRepository.findById(roleName).orElseThrow(() -> new RuntimeException("Role not found"));
 
         role.setDescription(request.getDescription());
 

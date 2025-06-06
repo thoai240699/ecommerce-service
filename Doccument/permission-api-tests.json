@@ -1,0 +1,339 @@
+{
+  "permission_api_tests": {
+    "description": "Test cases cho Permission API - Quản lý quyền hạn",
+    "base_url": "http://localhost:8080",
+    "note": "Tất cả các API này yêu cầu quyền admin và JWT token hợp lệ",
+    "endpoints": [
+      {
+        "name": "Tạo quyền hạn - Create Permission",
+        "method": "POST",
+        "url": "/permissions",
+        "description": "API để tạo quyền hạn mới (chỉ admin)",
+        "headers": {
+          "Authorization": "Bearer JWT_TOKEN_HERE",
+          "Content-Type": "application/json"
+        },
+        "test_cases": [
+          {
+            "case": "Tạo quyền hạn thành công",
+            "request_body": {
+              "name": "PRODUCT_CREATE",
+              "description": "Quyền tạo sản phẩm mới"
+            },
+            "expected_response": {
+              "code": 200,
+              "result": {
+                "name": "PRODUCT_CREATE",
+                "description": "Quyền tạo sản phẩm mới"
+              }
+            }
+          },
+          {
+            "case": "Tạo quyền hạn cho đọc dữ liệu",
+            "request_body": {
+              "name": "PRODUCT_READ",
+              "description": "Quyền xem danh sách sản phẩm"
+            },
+            "expected_response": {
+              "code": 200,
+              "result": {
+                "name": "PRODUCT_READ",
+                "description": "Quyền xem danh sách sản phẩm"
+              }
+            }
+          },
+          {
+            "case": "Tạo quyền hạn cho cập nhật",
+            "request_body": {
+              "name": "PRODUCT_UPDATE",
+              "description": "Quyền cập nhật thông tin sản phẩm"
+            },
+            "expected_response": {
+              "code": 200,
+              "result": {
+                "name": "PRODUCT_UPDATE",
+                "description": "Quyền cập nhật thông tin sản phẩm"
+              }
+            }
+          },
+          {
+            "case": "Tạo quyền hạn cho xóa",
+            "request_body": {
+              "name": "PRODUCT_DELETE",
+              "description": "Quyền xóa sản phẩm"
+            },
+            "expected_response": {
+              "code": 200,
+              "result": {
+                "name": "PRODUCT_DELETE",
+                "description": "Quyền xóa sản phẩm"
+              }
+            }
+          },
+          {
+            "case": "Tạo quyền hạn cho quản lý hệ thống",
+            "request_body": {
+              "name": "SYSTEM_ADMIN",
+              "description": "Quyền quản trị toàn hệ thống"
+            },
+            "expected_response": {
+              "code": 200,
+              "result": {
+                "name": "SYSTEM_ADMIN",
+                "description": "Quyền quản trị toàn hệ thống"
+              }
+            }
+          },
+          {
+            "case": "User thường không có quyền tạo permission",
+            "request_body": {
+              "name": "TEST_PERMISSION",
+              "description": "Test permission"
+            },
+            "expected_response": {
+              "code": 2406,
+              "message": "Bạn không có quyền truy cập"
+            }
+          }
+        ]
+      },
+      {
+        "name": "Lấy danh sách quyền hạn - Get All Permissions",
+        "method": "GET",
+        "url": "/permissions",
+        "description": "API để lấy danh sách tất cả quyền hạn (chỉ admin)",
+        "headers": {
+          "Authorization": "Bearer JWT_TOKEN_HERE",
+          "Content-Type": "application/json"
+        },
+        "test_cases": [
+          {
+            "case": "Admin lấy danh sách permissions thành công",
+            "expected_response": {
+              "code": 200,
+              "result": [
+                {
+                  "name": "USER_READ",
+                  "description": "Quyền đọc thông tin người dùng"
+                },
+                {
+                  "name": "USER_CREATE",
+                  "description": "Quyền tạo người dùng mới"
+                },
+                {
+                  "name": "USER_UPDATE",
+                  "description": "Quyền cập nhật thông tin người dùng"
+                },
+                {
+                  "name": "USER_DELETE",
+                  "description": "Quyền xóa người dùng"
+                },
+                {
+                  "name": "USER_READ_ALL",
+                  "description": "Quyền xem tất cả người dùng"
+                },
+                {
+                  "name": "ROLE_CREATE",
+                  "description": "Quyền tạo vai trò mới"
+                },
+                {
+                  "name": "ROLE_READ",
+                  "description": "Quyền xem danh sách vai trò"
+                },
+                {
+                  "name": "ROLE_UPDATE",
+                  "description": "Quyền cập nhật vai trò"
+                },
+                {
+                  "name": "ROLE_DELETE",
+                  "description": "Quyền xóa vai trò"
+                },
+                {
+                  "name": "PERMISSION_CREATE",
+                  "description": "Quyền tạo quyền hạn mới"
+                },
+                {
+                  "name": "PERMISSION_READ",
+                  "description": "Quyền xem danh sách quyền hạn"
+                },
+                {
+                  "name": "PERMISSION_DELETE",
+                  "description": "Quyền xóa quyền hạn"
+                },
+                {
+                  "name": "ADDRESS_CREATE",
+                  "description": "Quyền tạo địa chỉ mới"
+                },
+                {
+                  "name": "ADDRESS_READ",
+                  "description": "Quyền xem địa chỉ của chính mình"
+                },
+                {
+                  "name": "ADDRESS_READ_ALL",
+                  "description": "Quyền xem tất cả địa chỉ"
+                },
+                {
+                  "name": "ADDRESS_UPDATE",
+                  "description": "Quyền cập nhật địa chỉ"
+                },
+                {
+                  "name": "ADDRESS_DELETE",
+                  "description": "Quyền xóa địa chỉ"
+                },
+                {
+                  "name": "ORDER_CREATE",
+                  "description": "Quyền tạo đơn hàng mới"
+                },
+                {
+                  "name": "ORDER_READ",
+                  "description": "Quyền xem đơn hàng của chính mình"
+                },
+                {
+                  "name": "ORDER_READ_ALL",
+                  "description": "Quyền xem tất cả đơn hàng"
+                },
+                {
+                  "name": "ORDER_UPDATE",
+                  "description": "Quyền cập nhật đơn hàng"
+                },
+                {
+                  "name": "ORDER_DELETE",
+                  "description": "Quyền xóa đơn hàng"
+                },
+                {
+                  "name": "ORDER_CANCEL",
+                  "description": "Quyền hủy đơn hàng"
+                },
+                {
+                  "name": "ORDER_APPROVE",
+                  "description": "Quyền duyệt đơn hàng"
+                },
+                {
+                  "name": "SYSTEM_ADMIN",
+                  "description": "Quyền quản trị toàn hệ thống"
+                }
+              ]
+            }
+          },
+          {
+            "case": "User thường không có quyền xem permissions",
+            "expected_response": {
+              "code": 2406,
+              "message": "Bạn không có quyền truy cập"
+            }
+          },
+          {
+            "case": "Không có token xác thực",
+            "headers": {
+              "Content-Type": "application/json"
+            },
+            "expected_response": {
+              "code": 2407,
+              "message": "Bạn chưa đăng nhập"
+            }
+          }
+        ]
+      },
+      {
+        "name": "Xóa quyền hạn - Delete Permission",
+        "method": "DELETE",
+        "url": "/permissions/{permission}",
+        "description": "API để xóa quyền hạn (chỉ admin)",
+        "headers": {
+          "Authorization": "Bearer JWT_TOKEN_HERE",
+          "Content-Type": "application/json"
+        },
+        "test_cases": [
+          {
+            "case": "Xóa permission thành công",
+            "url": "/permissions/PRODUCT_CREATE",
+            "expected_response": {
+              "code": 200
+            }
+          },
+          {
+            "case": "Xóa permission không tồn tại",
+            "url": "/permissions/NON_EXISTENT_PERMISSION",
+            "expected_response": {
+              "code": 200
+            }
+          },
+          {
+            "case": "User thường không có quyền xóa permission",
+            "url": "/permissions/PRODUCT_CREATE",
+            "expected_response": {
+              "code": 2406,
+              "message": "Bạn không có quyền truy cập"
+            }
+          },
+          {
+            "case": "Không có token xác thực",
+            "url": "/permissions/PRODUCT_CREATE",
+            "headers": {
+              "Content-Type": "application/json"
+            },
+            "expected_response": {
+              "code": 2407,
+              "message": "Bạn chưa đăng nhập"
+            }
+          }
+        ]
+      }
+    ],
+    "suggested_permissions": {
+      "description": "Danh sách các quyền hạn được khuyến nghị cho hệ thống ecommerce",
+      "user_permissions": [
+        "USER_READ",
+        "USER_UPDATE",
+        "ADDRESS_CREATE",
+        "ADDRESS_READ",
+        "ADDRESS_UPDATE",
+        "ADDRESS_DELETE",
+        "ORDER_CREATE",
+        "ORDER_READ",
+        "ORDER_CANCEL"
+      ],
+      "shop_permissions": [
+        "USER_READ",
+        "USER_UPDATE",
+        "ADDRESS_CREATE",
+        "ADDRESS_READ",
+        "ADDRESS_UPDATE",
+        "ADDRESS_DELETE",
+        "ORDER_CREATE",
+        "ORDER_READ",
+        "ORDER_READ_ALL",
+        "ORDER_UPDATE",
+        "ORDER_CANCEL",
+        "ORDER_APPROVE"
+      ],
+      "admin_permissions": [
+        "USER_READ",
+        "USER_CREATE",
+        "USER_UPDATE",
+        "USER_DELETE",
+        "USER_READ_ALL",
+        "ROLE_CREATE",
+        "ROLE_READ",
+        "ROLE_UPDATE",
+        "ROLE_DELETE",
+        "PERMISSION_CREATE",
+        "PERMISSION_READ",
+        "PERMISSION_DELETE",
+        "ADDRESS_CREATE",
+        "ADDRESS_READ",
+        "ADDRESS_READ_ALL",
+        "ADDRESS_UPDATE",
+        "ADDRESS_DELETE",
+        "ORDER_CREATE",
+        "ORDER_READ",
+        "ORDER_READ_ALL",
+        "ORDER_UPDATE",
+        "ORDER_DELETE",
+        "ORDER_CANCEL",
+        "ORDER_APPROVE",
+        "SYSTEM_ADMIN"
+      ]
+    }
+  }
+}

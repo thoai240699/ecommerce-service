@@ -14,19 +14,19 @@ public class GlobalExceptionHandler {
 
     // Lỗi không xác định
     @ExceptionHandler(value = RuntimeException.class)
-    ResponseEntity<ApiResponse> handleRuntimeException(RuntimeException e) {
+    ResponseEntity<ApiResponse<Void>> handleRuntimeException(RuntimeException e) {
 
-        ApiResponse apiResponse = new ApiResponse();
+        ApiResponse<Void> apiResponse = new ApiResponse<>();
         apiResponse.setCode(ErrorCode.UNCATCH_ERROR.getCode());
-        apiResponse.setMessage(ErrorCode.UNCATCH_ERROR.getMessage() + e.getMessage());
+        apiResponse.setMessage(ErrorCode.UNCATCH_ERROR.getMessage());
 
         return ResponseEntity.badRequest().body(apiResponse);
     }
 
     @ExceptionHandler(value = AppException.class)
-    ResponseEntity<ApiResponse> handleAppException(AppException e) {
+    ResponseEntity<ApiResponse<Void>> handleAppException(AppException e) {
         ErrorCode errorCode = e.getErrorCode();
-        ApiResponse apiResponse = new ApiResponse();
+        ApiResponse<Void> apiResponse = new ApiResponse<>();
         apiResponse.setCode(errorCode.getCode());
         apiResponse.setMessage(errorCode.getMessage());
 
@@ -35,11 +35,11 @@ public class GlobalExceptionHandler {
 
     // Lỗi truy cập bị từ chối
     @ExceptionHandler(value = AccessDeniedException.class)
-    ResponseEntity<ApiResponse> handleAccessDeniedException(AccessDeniedException e) {
+    ResponseEntity<ApiResponse<Void>> handleAccessDeniedException(AccessDeniedException e) {
         ErrorCode errorCode = ErrorCode.UNAUTHORIZED;
 
         return ResponseEntity.status(errorCode.getStatusCode())
-                .body(ApiResponse.builder()
+                .body(ApiResponse.<Void>builder()
                         .code(errorCode.getCode())
                         .message(errorCode.getMessage())
                         .build());
@@ -47,9 +47,9 @@ public class GlobalExceptionHandler {
 
     // ValidationException: Để xử lý các lỗi xác thực dữ liệu đầu vào
     @ExceptionHandler(value = MethodArgumentNotValidException.class)
-    ResponseEntity<ApiResponse> handleMethodArgumentNotValidException(MethodArgumentNotValidException e) {
+    ResponseEntity<ApiResponse<Void>> handleMethodArgumentNotValidException(MethodArgumentNotValidException e) {
         // Lỗi thông tin không hợp lệ
-        ApiResponse apiResponse = new ApiResponse();
+        ApiResponse<Void> apiResponse = new ApiResponse<>();
         apiResponse.setCode(1000);
         apiResponse.setMessage(e.getFieldError().getDefaultMessage());
         return ResponseEntity.badRequest().body(apiResponse);

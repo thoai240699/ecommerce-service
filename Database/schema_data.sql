@@ -126,13 +126,11 @@ CREATE TABLE danh_gia (
 -- 2. Insert các vai trò cơ bản theo mô hình RBAC
 -- INSERT IGNORE INTO vai_tro (ten_vai_tro, mo_ta) VALUES 
 -- ('USER', 'Người dùng - Có thể mua hàng, quản lý đơn hàng và thông tin cá nhân'),
--- ('SHOP', 'Cửa hàng - Có thể quản lý sản phẩm, xử lý đơn hàng và xem báo cáo'),
+-- ('SHOP', 'Cửa hàng - Có thể quản lý sản phẩm, xử lý đơn hàng'),
 -- ('ADMIN', 'Quản trị viên - Có toàn quyền quản lý hệ thống');
 
 -- 3. Insert các permissions
 INSERT IGNORE INTO quyen_han (ten_quyen_han, mo_ta) VALUES
--- System Permissions
-('SYSTEM_ADMIN', 'Quyền quản trị hệ thống tối cao'),
 -- User Management Permissions
 ('USER_CREATE', 'Quyền tạo tài khoản người dùng mới'),
 ('USER_READ', 'Quyền xem thông tin người dùng'),
@@ -166,7 +164,7 @@ INSERT IGNORE INTO quyen_han (ten_quyen_han, mo_ta) VALUES
 
 -- 4. Gán permissions cho từng vai trò theo mô hình RBAC
 
--- USER Role Permissions (tương đương CUSTOMER cũ)
+-- USER Role Permissions
 INSERT IGNORE INTO vai_tro_quyen_han (ten_vai_tro, ten_quyen_han) VALUES
 ('USER', 'USER_READ'),
 ('USER', 'USER_UPDATE'),
@@ -178,7 +176,7 @@ INSERT IGNORE INTO vai_tro_quyen_han (ten_vai_tro, ten_quyen_han) VALUES
 ('USER', 'ORDER_READ'),
 ('USER', 'ORDER_CANCEL');
 
--- SHOP Role Permissions (tương đương SELLER cũ)
+-- SHOP Role Permissions
 INSERT IGNORE INTO vai_tro_quyen_han (ten_vai_tro, ten_quyen_han) VALUES
 ('SHOP', 'USER_READ'),
 ('SHOP', 'USER_UPDATE'),
@@ -213,11 +211,28 @@ INSERT IGNORE INTO vai_tro_quyen_han (ten_vai_tro, ten_quyen_han) VALUES
 ('ADMIN', 'ORDER_DELETE'),
 ('ADMIN', 'ORDER_READ_ALL'),
 ('ADMIN', 'ORDER_APPROVE'),
-('ADMIN', 'ORDER_CANCEL'),
-('ADMIN', 'SYSTEM_ADMIN');
+('ADMIN', 'ORDER_CANCEL');
 
 -- Hiển thị kết quả
 SELECT 'Setup permissions completed!' as status;
 SELECT COUNT(*) as total_permissions FROM quyen_han;
 SELECT COUNT(*) as total_roles FROM vai_tro;
-SELECT COUNT(*) as total_role_permissions FROM vai_tro_quyen_han; 
+SELECT COUNT(*) as total_role_permissions FROM vai_tro_quyen_han;
+
+-- Thêm index cho các trường thường xuyên tìm kiếm
+ALTER TABLE nguoi_dung ADD INDEX idx_username (ten_dang_nhap);
+ALTER TABLE nguoi_dung ADD INDEX idx_email (email);
+ALTER TABLE don_hang ADD INDEX idx_user (ma_nguoi_dung);
+ALTER TABLE don_hang ADD INDEX idx_status (trang_thai); 
+
+-- -- Thêm ràng buộc cho số điện thoại
+-- ALTER TABLE nguoi_dung ADD CONSTRAINT check_phone 
+-- CHECK (so_dien_thoai REGEXP '^(0|\\+?84)(3|5|7|8|9)[0-9]{8}$');
+
+-- -- Thêm ràng buộc cho email
+-- ALTER TABLE nguoi_dung ADD CONSTRAINT check_email 
+-- CHECK (email REGEXP '^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}$');
+
+-- -- Thêm ràng buộc cho giá trị tiền
+-- ALTER TABLE don_hang ADD CONSTRAINT check_total_amount 
+-- CHECK (tong_tien > 0);

@@ -1,0 +1,144 @@
+{
+  "authentication_api_tests": {
+    "description": "Test cases cho Authentication API - Xác thực người dùng",
+    "base_url": "http://localhost:8080",
+    "endpoints": [
+      {
+        "name": "Đăng nhập - Login",
+        "method": "POST",
+        "url": "/auth/token",
+        "description": "API để đăng nhập và nhận JWT token",
+        "headers": {
+          "Content-Type": "application/json"
+        },
+        "test_cases": [
+          {
+            "case": "Đăng nhập với admin",
+            "request_body": {
+              "username": "admin",
+              "password": "admin"
+            },
+            "expected_response": {
+              "code": 200,
+              "result": {
+                "token": "JWT_TOKEN_HERE"
+              }
+            }
+          },
+          {
+            "case": "Đăng nhập với user thường",
+            "request_body": {
+              "username": "user123",
+              "password": "password123"
+            },
+            "expected_response": {
+              "code": 200,
+              "result": {
+                "token": "JWT_TOKEN_HERE"
+              }
+            }
+          },
+          {
+            "case": "Đăng nhập sai mật khẩu",
+            "request_body": {
+              "username": "admin",
+              "password": "wrongpassword"
+            },
+            "expected_response": {
+              "code": 2404,
+              "message": "Mật khẩu không đúng, hãy nhập lại mật khẩu"
+            }
+          },
+          {
+            "case": "Đăng nhập với username không tồn tại",
+            "request_body": {
+              "username": "nonexistentuser",
+              "password": "password123"
+            },
+            "expected_response": {
+              "code": 2403,
+              "message": "Không tìm thấy người dùng với tên đăng nhập này"
+            }
+          }
+        ]
+      },
+      {
+        "name": "Kiểm tra token - Introspect",
+        "method": "POST",
+        "url": "/auth/introspect",
+        "description": "API để kiểm tra tính hợp lệ của JWT token",
+        "headers": {
+          "Content-Type": "application/json"
+        },
+        "test_cases": [
+          {
+            "case": "Token hợp lệ",
+            "request_body": {
+              "token": "VALID_JWT_TOKEN_HERE"
+            },
+            "expected_response": {
+              "code": 200,
+              "result": {
+                "valid": true
+              }
+            }
+          },
+          {
+            "case": "Token không hợp lệ",
+            "request_body": {
+              "token": "INVALID_JWT_TOKEN_HERE"
+            },
+            "expected_response": {
+              "code": 200,
+              "result": {
+                "valid": false
+              }
+            }
+          },
+          {
+            "case": "Token đã hết hạn",
+            "request_body": {
+              "token": "EXPIRED_JWT_TOKEN_HERE"
+            },
+            "expected_response": {
+              "code": 200,
+              "result": {
+                "valid": false
+              }
+            }
+          }
+        ]
+      },
+      {
+        "name": "Đăng xuất - Logout",
+        "method": "POST",
+        "url": "/auth/logout",
+        "description": "API để đăng xuất và vô hiệu hóa JWT token",
+        "headers": {
+          "Content-Type": "application/json"
+        },
+        "test_cases": [
+          {
+            "case": "Đăng xuất thành công",
+            "request_body": {
+              "token": "VALID_JWT_TOKEN_HERE"
+            },
+            "expected_response": {
+              "code": 200
+            }
+          },
+          {
+            "case": "Đăng xuất với token không hợp lệ",
+            "request_body": {
+              "token": "INVALID_JWT_TOKEN_HERE"
+            },
+            "expected_response": {
+              "code": 2406,
+              "message": "Bạn không có quyền truy cập"
+            }
+          }
+        ]
+      }
+    ]
+  }
+}
