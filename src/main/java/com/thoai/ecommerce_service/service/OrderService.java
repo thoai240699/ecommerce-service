@@ -2,6 +2,8 @@ package com.thoai.ecommerce_service.service;
 
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
@@ -9,8 +11,6 @@ import org.springframework.stereotype.Service;
 import com.thoai.ecommerce_service.dto.request.OrderCreationRequest;
 import com.thoai.ecommerce_service.dto.request.OrderUpdateRequest;
 import com.thoai.ecommerce_service.dto.response.OrderResponse;
-import com.thoai.ecommerce_service.entity.Order;
-import com.thoai.ecommerce_service.entity.User;
 import com.thoai.ecommerce_service.enums.OrderStatus;
 import com.thoai.ecommerce_service.exception.AppException;
 import com.thoai.ecommerce_service.exception.ErrorCode;
@@ -21,8 +21,6 @@ import com.thoai.ecommerce_service.repository.UserRepository;
 
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 @Service
 @RequiredArgsConstructor
@@ -37,15 +35,17 @@ public class OrderService {
     // Tạo đơn hàng - quyền ORDER_CREATE
     // USER chỉ có thể tạo đơn hàng cho chính mình
     // SHOP và ADMIN có thể tạo đơn hàng cho bất kỳ user nào
-    @PreAuthorize("hasAuthority('ORDER_CREATE') and " +
-            "(hasAnyAuthority('SHOP', 'ADMIN') or " +
-            "(#request.userId == null or @userRepository.findById(#request.userId).get().username == authentication.name))")
+    @PreAuthorize(
+            "hasAuthority('ORDER_CREATE') and " + "(hasAnyAuthority('SHOP', 'ADMIN') or "
+                    + "(#request.userId == null or @userRepository.findById(#request.userId).get().username == authentication.name))")
     public OrderResponse createOrder(OrderCreationRequest request) {
         String userId;
         if (request.getUserId() == null) {
             // Nếu không có userId, lấy từ người dùng đang đăng nhập
-            String username = SecurityContextHolder.getContext().getAuthentication().getName();
-            userId = userRepository.findByUsername(username)
+            String username =
+                    SecurityContextHolder.getContext().getAuthentication().getName();
+            userId = userRepository
+                    .findByUsername(username)
                     .orElseThrow(() -> new AppException(ErrorCode.USERNAME_NOT_FOUND))
                     .getUserId();
         } else {
@@ -56,8 +56,7 @@ public class OrderService {
             }
         }
 
-        var user = userRepository.findById(userId)
-                .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_FOUND));
+        var user = userRepository.findById(userId).orElseThrow(() -> new AppException(ErrorCode.USER_NOT_FOUND));
 
         var address = addressRepository
                 .findById(request.getAddressId())
@@ -85,7 +84,8 @@ public class OrderService {
     }
 
     // Lấy đơn hàng theo ID - quyền ORDER_READ_ALL hoặc chính chủ đơn hàng
-    @PreAuthorize("hasAuthority('ORDER_READ_ALL') or @orderRepository.findById(#orderId).get().user.username == authentication.name")
+    @PreAuthorize(
+            "hasAuthority('ORDER_READ_ALL') or @orderRepository.findById(#orderId).get().user.username == authentication.name")
     public OrderResponse getOrderById(String orderId) {
         var order = orderRepository.findById(orderId).orElseThrow(() -> new AppException(ErrorCode.ORDER_NOT_FOUND));
         return orderMapper.toOrderResponse(order);
@@ -120,12 +120,13 @@ public class OrderService {
     }
 
     // Hủy đơn hàng - quyền ORDER_CANCEL và chỉ chủ đơn hàng
-    @PreAuthorize("hasAuthority('ORDER_CANCEL') and (@orderRepository.findById(#orderId).get().user.username == authentication.name)")
+    @PreAuthorize(
+            "hasAuthority('ORDER_CANCEL') and (@orderRepository.findById(#orderId).get().user.username == authentication.name)")
     public OrderResponse cancelOrder(String orderId) {
         try {
             // Kiểm tra đơn hàng tồn tại
-            var order = orderRepository.findById(orderId)
-                    .orElseThrow(() -> new AppException(ErrorCode.ORDER_NOT_FOUND));
+            var order =
+                    orderRepository.findById(orderId).orElseThrow(() -> new AppException(ErrorCode.ORDER_NOT_FOUND));
 
             // Kiểm tra trạng thái đơn hàng
             if (order.getStatus() == OrderStatus.CANCELLED) {
@@ -163,8 +164,8 @@ public class OrderService {
     public OrderResponse approveOrder(String orderId) {
         try {
             // Kiểm tra đơn hàng tồn tại
-            var order = orderRepository.findById(orderId)
-                    .orElseThrow(() -> new AppException(ErrorCode.ORDER_NOT_FOUND));
+            var order =
+                    orderRepository.findById(orderId).orElseThrow(() -> new AppException(ErrorCode.ORDER_NOT_FOUND));
 
             // Kiểm tra trạng thái đơn hàng
             if (order.getStatus() != OrderStatus.PENDING) {

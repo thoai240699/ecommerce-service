@@ -219,11 +219,6 @@ SELECT COUNT(*) as total_permissions FROM quyen_han;
 SELECT COUNT(*) as total_roles FROM vai_tro;
 SELECT COUNT(*) as total_role_permissions FROM vai_tro_quyen_han;
 
--- Thêm index cho các trường thường xuyên tìm kiếm
-ALTER TABLE nguoi_dung ADD INDEX idx_username (ten_dang_nhap);
-ALTER TABLE nguoi_dung ADD INDEX idx_email (email);
-ALTER TABLE don_hang ADD INDEX idx_user (ma_nguoi_dung);
-ALTER TABLE don_hang ADD INDEX idx_status (trang_thai); 
 
 -- -- Thêm ràng buộc cho số điện thoại
 -- ALTER TABLE nguoi_dung ADD CONSTRAINT check_phone 

@@ -1,5 +1,13 @@
 package com.thoai.ecommerce_service.configuration;
 
+import java.util.HashSet;
+
+import org.springframework.boot.ApplicationRunner;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.security.crypto.password.PasswordEncoder;
+
 import com.thoai.ecommerce_service.constant.PredefinedRole;
 import com.thoai.ecommerce_service.entity.Role;
 import com.thoai.ecommerce_service.entity.User;
@@ -7,18 +15,12 @@ import com.thoai.ecommerce_service.exception.AppException;
 import com.thoai.ecommerce_service.exception.ErrorCode;
 import com.thoai.ecommerce_service.repository.RoleRepository;
 import com.thoai.ecommerce_service.repository.UserRepository;
+
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import lombok.experimental.NonFinal;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.boot.ApplicationRunner;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
-import org.springframework.security.crypto.password.PasswordEncoder;
-
-import java.util.HashSet;
 
 @Configuration
 @RequiredArgsConstructor
@@ -35,7 +37,10 @@ public class ApplicationInitConfig {
     static final String ADMIN_PASSWORD = "admin";
 
     @Bean
-    @ConditionalOnProperty(prefix = "spring", value = "datasource.driverClassName", havingValue = "com.mysql.cj.jdbc.Driver")
+    @ConditionalOnProperty(
+            prefix = "spring",
+            value = "datasource.driverClassName",
+            havingValue = "com.mysql.cj.jdbc.Driver")
     ApplicationRunner applicationRunner(UserRepository userRepository, RoleRepository roleRepository) {
         return args -> {
             if (userRepository.findByUsername(ADMIN_USER_NAME).isEmpty()) {
@@ -55,7 +60,8 @@ public class ApplicationInitConfig {
                 // .name(PredefinedRole.ADMIN_ROLE)
                 // .description("Quản trị viên - Có toàn quyền quản lý hệ thống")
                 // .build());
-                Role adminRole = roleRepository.findById(PredefinedRole.ADMIN_ROLE)
+                Role adminRole = roleRepository
+                        .findById(PredefinedRole.ADMIN_ROLE)
                         .orElseThrow(() -> new AppException(ErrorCode.ADMIN_NOT_FOUND));
 
                 var roles = new HashSet<Role>();

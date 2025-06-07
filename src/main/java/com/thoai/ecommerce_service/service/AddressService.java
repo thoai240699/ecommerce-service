@@ -28,7 +28,8 @@ public class AddressService {
 
     // Tạo mới địa chỉ - quyền ADDRESS_CREATE và chỉ cho phép tạo địa chỉ cho chính
     // mình
-    @PreAuthorize("hasAuthority('ADDRESS_CREATE') and (@userRepository.findById(#request.userId).get().username == authentication.name)")
+    @PreAuthorize(
+            "hasAuthority('ADDRESS_CREATE') and (@userRepository.findById(#request.userId).get().username == authentication.name)")
     public AddressReponse createAddress(AddressCreateRequest request) {
         var user = userRepository
                 .findById(request.getUserId())
@@ -66,7 +67,8 @@ public class AddressService {
     }
 
     // Xóa địa chỉ - quyền ADDRESS_DELETE và chỉ cho phép xóa địa chỉ của chính mình
-    @PreAuthorize("hasAuthority('ADDRESS_DELETE') and (@addressRepository.findById(#addressId).get().user.username == authentication.name)")
+    @PreAuthorize(
+            "hasAuthority('ADDRESS_DELETE') and (@addressRepository.findById(#addressId).get().user.username == authentication.name)")
     public void deleteAddress(String addressId) {
         if (!addressRepository.existsById(addressId)) {
             throw new AppException(ErrorCode.ADDRESS_NOT_FOUND);
@@ -76,10 +78,11 @@ public class AddressService {
 
     // Cập nhật địa chỉ - quyền ADDRESS_UPDATE và chỉ cho phép cập nhật địa chỉ của
     // chính mình
-    @PreAuthorize("hasAuthority('ADDRESS_UPDATE') and (@addressRepository.findById(#addressId).get().user.username == authentication.name)")
+    @PreAuthorize(
+            "hasAuthority('ADDRESS_UPDATE') and (@addressRepository.findById(#addressId).get().user.username == authentication.name)")
     public AddressReponse updateAddress(String addressId, AddressUpdateRequest request) {
-        var address = addressRepository.findById(addressId)
-                .orElseThrow(() -> new AppException(ErrorCode.ADDRESS_NOT_FOUND));
+        var address =
+                addressRepository.findById(addressId).orElseThrow(() -> new AppException(ErrorCode.ADDRESS_NOT_FOUND));
         addressMapper.updateAddress(address, request);
         return addressMapper.toAddressResponse(addressRepository.save(address));
     }

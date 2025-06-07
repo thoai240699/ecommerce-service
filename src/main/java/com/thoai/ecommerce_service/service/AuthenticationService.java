@@ -1,5 +1,18 @@
 package com.thoai.ecommerce_service.service;
 
+import java.text.ParseException;
+import java.time.Instant;
+import java.time.temporal.ChronoUnit;
+import java.util.Date;
+import java.util.StringJoiner;
+import java.util.UUID;
+
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.stereotype.Service;
+import org.springframework.util.CollectionUtils;
+
 import com.nimbusds.jose.*;
 import com.nimbusds.jose.crypto.MACSigner;
 import com.nimbusds.jose.crypto.MACVerifier;
@@ -16,22 +29,11 @@ import com.thoai.ecommerce_service.exception.AppException;
 import com.thoai.ecommerce_service.exception.ErrorCode;
 import com.thoai.ecommerce_service.repository.InvalidatedTokenRepository;
 import com.thoai.ecommerce_service.repository.UserRepository;
+
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import lombok.experimental.NonFinal;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.stereotype.Service;
-import org.springframework.util.CollectionUtils;
-
-import java.text.ParseException;
-import java.time.Instant;
-import java.time.temporal.ChronoUnit;
-import java.util.Date;
-import java.util.StringJoiner;
-import java.util.UUID;
 
 @Slf4j
 @RequiredArgsConstructor

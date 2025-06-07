@@ -56,8 +56,9 @@ public class UserService {
 
         // Chỉ admin mới có quyền thêm role tùy chọn
         var authentication = SecurityContextHolder.getContext().getAuthentication();
-        if (authentication != null && authentication.getAuthorities().stream()
-                .anyMatch(a -> a.getAuthority().equals("USER_CREATE"))) {
+        if (authentication != null
+                && authentication.getAuthorities().stream()
+                        .anyMatch(a -> a.getAuthority().equals("USER_CREATE"))) {
             if (request.getRoles() != null && !request.getRoles().isEmpty()) {
                 roles.addAll(roleRepository.findAllById(request.getRoles()));
             }
@@ -82,7 +83,8 @@ public class UserService {
     }
 
     // Cập nhật user - chỉ chính user đó hoặc admin có quyền USER_UPDATE
-    @PreAuthorize("authentication.name == @userRepository.findById(#userId).get().username or hasAuthority('USER_UPDATE')")
+    @PreAuthorize(
+            "authentication.name == @userRepository.findById(#userId).get().username or hasAuthority('USER_UPDATE')")
     public UserResponse updateUser(String userId, UserUpdateRequest request) {
         try {
             User user = userRepository.findById(userId).orElseThrow(() -> new AppException(ErrorCode.USER_NOT_FOUND));
@@ -102,8 +104,9 @@ public class UserService {
             // Chỉ admin mới được cập nhật roles
             if (request.getRoles() != null && !request.getRoles().isEmpty()) {
                 var authentication = SecurityContextHolder.getContext().getAuthentication();
-                if (authentication != null && authentication.getAuthorities().stream()
-                        .anyMatch(a -> a.getAuthority().equals("USER_UPDATE"))) {
+                if (authentication != null
+                        && authentication.getAuthorities().stream()
+                                .anyMatch(a -> a.getAuthority().equals("USER_UPDATE"))) {
                     var roles = roleRepository.findAllById(request.getRoles());
                     user.setRoles(new HashSet<>(roles));
                 }
@@ -140,8 +143,8 @@ public class UserService {
         var context = SecurityContextHolder.getContext();
         String name = context.getAuthentication().getName();
 
-        User user = userRepository.findByUsername(name)
-                .orElseThrow(() -> new AppException(ErrorCode.USERNAME_NOT_FOUND));
+        User user =
+                userRepository.findByUsername(name).orElseThrow(() -> new AppException(ErrorCode.USERNAME_NOT_FOUND));
 
         return userMapper.toUserResponse(user);
     }
